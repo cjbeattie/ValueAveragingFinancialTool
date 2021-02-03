@@ -6,6 +6,8 @@ const portfolioSchema = Schema({
         ticker: String,
         targetPercent: Number,
         numHeldUnits: Number,
+        price: Number,
+        priceUpdated: Date,
     }]
 });
 
