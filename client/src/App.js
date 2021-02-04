@@ -1,9 +1,10 @@
 import './App.css';
+import ResponsiveDrawer from './components/ResponsiveDrawer'
 
 function App() {
   return (
     <div className="App">
-      <h1>Value Averaging</h1>
+      <ResponsiveDrawer />
     </div>
   );
 }
