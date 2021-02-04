@@ -12,6 +12,11 @@ const valuePathSchema = Schema({
     },
     r: Number,
     g: Number,
+    currency: String,
+    valuePath: [{
+        cycleDate: Date,
+        cycleValue: Number,
+    }]
 });
 
 const ValuePath = mongoose.model("ValuePath", valuePathSchema);

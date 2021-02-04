@@ -13,6 +13,8 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import MailIcon from '@material-ui/icons/Mail';
 import MenuIcon from '@material-ui/icons/Menu';
+import AttachMoneyIcon from '@material-ui/icons/AttachMoney';
+import ShowChartIcon from '@material-ui/icons/ShowChart';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
@@ -67,12 +69,20 @@ function ResponsiveDrawer(props) {
             <div className={classes.toolbar} />
             <Divider />
             <List>
-                {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
+                {/* {['Portfolio', 'Value Path', 'History'].map((text, index) => (
                     <ListItem button key={text}>
                         <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
                         <ListItemText primary={text} />
                     </ListItem>
-                ))}
+                ))} */}
+                <ListItem button>
+                    <ListItemIcon><AttachMoneyIcon /></ListItemIcon>
+                    <ListItemText primary="Portfolio" />
+                </ListItem>
+                <ListItem button>
+                    <ListItemIcon><ShowChartIcon /></ListItemIcon>
+                    <ListItemText primary="Value Path Settings" />
+                </ListItem>
             </List>
             <Divider />
             <List>
@@ -103,8 +113,8 @@ function ResponsiveDrawer(props) {
                         <MenuIcon />
                     </IconButton>
                     <Typography variant="h6" noWrap>
-                        Responsive drawer
-          </Typography>
+                        Value Averaging Management Tool
+                    </Typography>
                 </Toolbar>
             </AppBar>
             <nav className={classes.drawer} aria-label="mailbox folders">
@@ -151,7 +161,7 @@ function ResponsiveDrawer(props) {
                     imperdiet massa tincidunt. Cras tincidunt lobortis feugiat vivamus at augue. At augue eget
                     arcu dictum varius duis at consectetur lorem. Velit sed ullamcorper morbi tincidunt. Lorem
                     donec massa sapien faucibus et molestie ac.
-        </Typography>
+                </Typography>
                 <Typography paragraph>
                     Consequat mauris nunc congue nisi vitae suscipit. Fringilla est ullamcorper eget nulla
                     facilisi etiam dignissim diam. Pulvinar elementum integer enim neque volutpat ac
@@ -162,7 +172,7 @@ function ResponsiveDrawer(props) {
                     tortor. Habitant morbi tristique senectus et. Adipiscing elit duis tristique sollicitudin
                     nibh sit. Ornare aenean euismod elementum nisi quis eleifend. Commodo viverra maecenas
                     accumsan lacus vel facilisis. Nulla posuere sollicitudin aliquam ultrices sagittis orci a.
-        </Typography>
+                </Typography>
             </main>
         </div>
     );

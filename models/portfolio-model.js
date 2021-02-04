@@ -2,12 +2,14 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const portfolioSchema = Schema({
-    stock: [{
-        ticker: String,
+    heldStocks: [{
+        symbol: String,
         targetPercent: Number,
         numHeldUnits: Number,
-        price: Number,
-        priceUpdated: Date,
+        currencyCode: String,
+        // name: String,
+        // currentPrice: Number,
+        // priceUpdated: Date,
     }]
 });
 
