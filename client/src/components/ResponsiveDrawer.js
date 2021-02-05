@@ -24,6 +24,24 @@ import ValuePath from './ValuePath';
 
 const drawerWidth = 240;
 
+function ListItemLink(props) {
+    const { icon, primary, to } = props;
+
+    const renderLink = React.useMemo(
+        () => React.forwardRef((itemProps, ref) => <NavLink to={to} ref={ref} {...itemProps} />),
+        [to],
+    );
+
+    return (
+        <li>
+            <ListItem button component={renderLink}>
+                {icon ? <ListItemIcon>{icon}</ListItemIcon> : null}
+                <ListItemText primary={primary} />
+            </ListItem>
+        </li>
+    );
+}
+
 const useStyles = makeStyles((theme) => ({
     root: {
         display: 'flex',
@@ -72,20 +90,24 @@ function ResponsiveDrawer(props) {
             <div className={classes.toolbar} />
             <Divider />
             <List>
+                {/* Original */}
                 {/* {['Portfolio', 'Value Path', 'History'].map((text, index) => (
                     <ListItem button key={text}>
                         <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
                         <ListItemText primary={text} />
                     </ListItem>
                 ))} */}
-                <ListItem button>
+                {/* Basic value path buttons without routing */}
+                {/* <ListItem button>
                     <ListItemIcon><AttachMoneyIcon /></ListItemIcon>
                     <ListItemText primary="Portfolio" />
                 </ListItem>
                 <ListItem button>
                     <ListItemIcon><ShowChartIcon /></ListItemIcon>
                     <ListItemText primary="Value Path Settings" />
-                </ListItem>
+                </ListItem> */}
+                <ListItemLink to="/portfolio" primary="Portfolio" icon={<AttachMoneyIcon />} />
+                <ListItemLink to="/valuepath" primary="Value Path" icon={<ShowChartIcon />} />
             </List>
             <Divider />
             <List>
