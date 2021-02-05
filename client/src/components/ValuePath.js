@@ -18,9 +18,21 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import DatePicker from './DatePicker';
-import CurrencySelect from './CurrencySelect';
-import CycleSelect from './CycleSelect';
+// import DatePicker from './DatePicker';
+// import CurrencySelect from './CurrencySelect';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+import InputLabel from '@material-ui/core/InputLabel';
+// import CurrencyItems from './CurrencyItems'
+import MenuItem from '@material-ui/core/MenuItem';
+// import CycleSelect from './CycleSelect';
+import 'date-fns';
+import DateFnsUtils from '@date-io/date-fns';
+import {
+    MuiPickersUtilsProvider,
+    // KeyboardTimePicker,
+    KeyboardDatePicker,
+} from '@material-ui/pickers';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -40,10 +52,25 @@ const useStyles = makeStyles((theme) => ({
     submit: {
         margin: theme.spacing(3, 0, 2),
     },
+    formControl: {
+        // margin: theme.spacing(1),
+        minWidth: 120,
+    },
 }));
 
 export default function ValuePath() {
     const classes = useStyles();
+
+    const [formData, setFormData] = React.useState({
+        investmentGoal: "",
+        endDate: new Date(),
+        startDate: new Date(),
+        cycle: "",
+        r: "",
+        g: "",
+        currency: "",
+    });
+
 
     return (
         <Container component="main" maxWidth="xs">
@@ -67,10 +94,37 @@ export default function ValuePath() {
                                 id="investmentGoal"
                                 label="Investment Goal"
                                 autoFocus
+                                value={formData.investmentGoal}
+                                onChange={(e) =>
+                                    setFormData((state) => ({
+                                        ...state,
+                                        investmentGoal: e.target.value,
+                                    }))
+                                }
                             />
                         </Grid>
                         <Grid item xs={12} sm={6}>
-                            <DatePicker name="endDate" label="Goal End Date" />
+                            {/* <DatePicker name="endDate" label="Goal End Date" /> */}
+                            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                <KeyboardDatePicker
+                                    // margin="normal"
+                                    name="endDate"
+                                    id="date-picker-dialog"
+                                    inputVariant="outlined"
+                                    label="Goal End Date"
+                                    format="dd/MM/yyyy"
+                                    value={formData.endDate}
+                                    onChange={(date) =>
+                                        setFormData((state) => ({
+                                            ...state,
+                                            endDate: date,
+                                        }))
+                                    }
+                                    KeyboardButtonProps={{
+                                        'aria-label': 'change date',
+                                    }}
+                                />
+                            </MuiPickersUtilsProvider>
                         </Grid>
                         <Grid item xs={12} sm={6}>
                             <TextField
@@ -82,6 +136,13 @@ export default function ValuePath() {
                                 id="r"
                                 label="r"
                                 autoFocus
+                                value={formData.rl}
+                                onChange={(e) =>
+                                    setFormData((state) => ({
+                                        ...state,
+                                        r: e.target.value,
+                                    }))
+                                }
                             />
                         </Grid>
                         <Grid item xs={12} sm={6}>
@@ -94,11 +155,41 @@ export default function ValuePath() {
                                 id="g"
                                 label="g"
                                 autoFocus
+                                value={formData.g}
+                                onChange={(e) =>
+                                    setFormData((state) => ({
+                                        ...state,
+                                        g: e.target.value,
+                                    }))
+                                }
                             />
                         </Grid>
 
                         <Grid item xs={12} sm={6}>
-                            <CurrencySelect />
+                            {/* <CurrencySelect /> */}
+                            <FormControl variant="outlined" className={classes.formControl}>
+                                <InputLabel id="demo-simple-select-outlined-label">Currency</InputLabel>
+                                <Select
+                                    labelId="demo-simple-select-outlined-label"
+                                    id="demo-simple-select-outlined"
+                                    value={formData.currency}
+                                    onChange={(e) =>
+                                        setFormData((state) => ({
+                                            ...state,
+                                            currency: e.target.value,
+                                        }))
+                                    }
+                                    label="Currency"
+                                >
+                                    {/* <CurrencyItems /> */}
+                                    <MenuItem value="USD" label="US dollar">USD</MenuItem>
+                                    <MenuItem value="SGD" label="Singapore dollar">SGD</MenuItem>
+                                    <MenuItem value="AUD" label="Australian dollar">AUD</MenuItem>
+                                    <MenuItem value="NZD" label="New Zealand dollar">NZD</MenuItem>
+                                    <MenuItem value="EUR" label="Euro">EUR</MenuItem>
+                                    <MenuItem value="GBP" label="Pound sterling">GBP</MenuItem>
+                                </Select>
+                            </FormControl>
                         </Grid>
                         <Grid item xs={12} sm={6}>
                             <TextField
@@ -110,13 +201,59 @@ export default function ValuePath() {
                                 id="currentValue"
                                 label="Current Value"
                                 autoFocus
+                                value={formData.currentValue}
+                                onChange={(e) =>
+                                    setFormData((state) => ({
+                                        ...state,
+                                        currentValue: e.target.value,
+                                    }))
+                                }
                             />
                         </Grid>
                         <Grid item xs={12} sm={6}>
-                            <CycleSelect />
+                            {/* <CycleSelect /> */}
+                            <FormControl variant="outlined" className={classes.formControl}>
+                                <InputLabel id="demo-simple-select-outlined-label">Cycle</InputLabel>
+                                <Select
+                                    labelId="demo-simple-select-outlined-label"
+                                    id="demo-simple-select-outlined"
+                                    value={formData.cycle}
+                                    onChange={(e) =>
+                                        setFormData((state) => ({
+                                            ...state,
+                                            cycle: e.target.value,
+                                        }))
+                                    }
+                                    label="Cycle"
+                                >
+                                    <MenuItem value="Monthly" selected="selected" label="Monthly">Monthly</MenuItem>
+                                    <MenuItem value="Quarterly" selected="selected" label="Quarterly">Quarterly</MenuItem>
+                                    <MenuItem value="Yearly" selected="selected" label="Yearly">Yearly</MenuItem>
+                                </Select>
+                            </FormControl>
                         </Grid>
                         <Grid item xs={12} sm={6}>
-                            <DatePicker name="startDate" label="Start Date" />
+                            {/* <DatePicker name="startDate" label="Start Date" /> */}
+                            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                <KeyboardDatePicker
+                                    // margin="normal"
+                                    name="startDate"
+                                    id="date-picker-dialog"
+                                    inputVariant="outlined"
+                                    label="Start Date"
+                                    format="dd/MM/yyyy"
+                                    value={formData.startDate}
+                                    onChange={(date) =>
+                                        setFormData((state) => ({
+                                            ...state,
+                                            startDate: date,
+                                        }))
+                                    }
+                                    KeyboardButtonProps={{
+                                        'aria-label': 'change date',
+                                    }}
+                                />
+                            </MuiPickersUtilsProvider>
                         </Grid>
                         {/* <Grid item xs={12}>
                             <TextField

@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const valuePathSchema = Schema({
-    investmentGoal: { type: String },//, required: true },
+    investmentGoal: { type: Number },//, required: true },
     endDate: Date,
     startDate: Date,
     cycle: {
