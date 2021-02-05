@@ -1,7 +1,7 @@
 const express = require('express');
 const { body, validationResult } = require("express-validator");
 const { StatusCodes } = require("http-status-codes");
-const Portfolio = require('../models/portfolio-model');
+const Portfolio = require('../models/portfolioModel');
 
 const router = express.Router();
 

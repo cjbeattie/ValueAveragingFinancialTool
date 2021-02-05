@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 // const listController = require("./controllers/list-controller");
 // const categoryController = require("./controllers/category-controller");
 // const sessionsController = require('./controllers/sessions-controller.js');
+const valuePathController = require('./controllers/valuePathController')
 const session = require("express-session");
 // const path = require('path'); // setup the mongoose connection (app.js)
 
@@ -11,12 +12,12 @@ require("dotenv").config();
 
 const app = express()
 
-// mongoose.connect(process.env.MONGODB_URI, {
-//     useNewUrlParser: true,
-//     useUnifiedTopology: true,
-//     useFindAndModify: false,
-//     useCreateIndex: true
-// });
+mongoose.connect(process.env.MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useFindAndModify: false,
+    useCreateIndex: true
+});
 
 // app.use() => using express middleware
 app.use(express.urlencoded({ extended: false }));
@@ -33,6 +34,8 @@ app.use(
 // app.use("/api/list", listController);
 // app.use("/api/category", categoryController);
 // app.use('/api/sessions', sessionsController)
+app.use("/api/valuePath", valuePathController);
+
 
 if (process.env.NODE_ENV === 'production') {
     app.use(express.static('./client/build'));

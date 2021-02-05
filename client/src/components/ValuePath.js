@@ -33,6 +33,8 @@ import {
     // KeyboardTimePicker,
     KeyboardDatePicker,
 } from '@material-ui/pickers';
+import axios from "axios";
+
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -61,6 +63,7 @@ const useStyles = makeStyles((theme) => ({
 export default function ValuePath() {
     const classes = useStyles();
 
+    const [created, setCreated] = React.useState(false);
     const [formData, setFormData] = React.useState({
         investmentGoal: "",
         endDate: new Date(),
@@ -70,6 +73,20 @@ export default function ValuePath() {
         g: "",
         currency: "",
     });
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        axios
+            .post("/api/valuePath", formData)
+            .then((res) => {
+                console.log("Response", res);
+                setCreated(true);
+            })
+            .catch((error) => {
+                console.log("Error", error);
+            });
+    };
+
 
 
     return (
@@ -291,9 +308,12 @@ export default function ValuePath() {
                         variant="contained"
                         color="primary"
                         className={classes.submit}
+                        onClick={handleSubmit}
                     >
                         Save
                     </Button>
+                    {created ? <Typography component="h3" variant="h5">Added!</Typography> : <></>}
+
                     {/* <Grid container justify="flex-end">
                         <Grid item>
                             <Link href="#" variant="body2">
