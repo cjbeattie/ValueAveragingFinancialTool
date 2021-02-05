@@ -18,6 +18,9 @@ import ShowChartIcon from '@material-ui/icons/ShowChart';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { NavLink, Route, Switch } from "react-router-dom";
+import Portfolio from './Portfolio';
+import ValuePath from './ValuePath';
 
 const drawerWidth = 240;
 
@@ -150,7 +153,7 @@ function ResponsiveDrawer(props) {
             </nav>
             <main className={classes.content}>
                 <div className={classes.toolbar} />
-                <Typography paragraph>
+                {/* <Typography paragraph>
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
                     ut labore et dolore magna aliqua. Rhoncus dolor purus non enim praesent elementum
                     facilisis leo vel. Risus at ultrices mi tempus imperdiet. Semper risus in hendrerit
@@ -172,7 +175,12 @@ function ResponsiveDrawer(props) {
                     tortor. Habitant morbi tristique senectus et. Adipiscing elit duis tristique sollicitudin
                     nibh sit. Ornare aenean euismod elementum nisi quis eleifend. Commodo viverra maecenas
                     accumsan lacus vel facilisis. Nulla posuere sollicitudin aliquam ultrices sagittis orci a.
-                </Typography>
+                </Typography> */}
+                <Switch>
+                    <Route exact path="/"><Portfolio /></Route>
+                    <Route path="/valuepath"><ValuePath /></Route>
+                    <Route path="/portfolio"><Portfolio /></Route>
+                </Switch>
             </main>
         </div>
     );
