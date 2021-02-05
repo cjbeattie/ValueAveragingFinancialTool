@@ -30,12 +30,12 @@ router.get("/seed", (req, res) => {
     Portfolio.create(
         [{
             heldStocks: [
-                { symbol: "VAS.AX", targetPercent: 30, numHeldUnits: 100, name: "Australia ASX", currency: "AUD", price: 8176, priceUpdated: new Date("2021-02-04") },
-                { symbol: "VGB.AT", targetPercent: 33, numHeldUnits: 150, name: "Australia Bonds", currency: "AUD", price: 7945, priceUpdated: new Date("2021-02-04") },
-                { symbol: "VTS.AT", targetPercent: 33, numHeldUnits: 150, name: "Total US Stock Market", currency: "AUD", price: 7945, priceUpdated: new Date("2021-02-04") },
-                { symbol: "VEU.AT", targetPercent: 33, numHeldUnits: 150, name: "All World ex-US", currency: "AUD", price: 7945, priceUpdated: new Date("2021-02-04") },
-                { symbol: "VHY.AT", targetPercent: 33, numHeldUnits: 150, name: "Australia High Yield", currency: "AUD", price: 7945, priceUpdated: new Date("2021-02-04") },
-                { symbol: "VAP.AT", targetPercent: 33, numHeldUnits: 150, name: "Australia Property", currency: "AUD", price: 7945, priceUpdated: new Date("2021-02-04") },
+                { symbol: "VAS.AX", targetPercent: 30, numHeldUnits: 100, name: "Australia ASX", currency: "AUD", currentPrice: 8176, priceUpdated: new Date("2021-02-04") },
+                { symbol: "VGB.AT", targetPercent: 33, numHeldUnits: 150, name: "Australia Bonds", currency: "AUD", currentPrice: 7945, priceUpdated: new Date("2021-02-04") },
+                { symbol: "VTS.AT", targetPercent: 33, numHeldUnits: 150, name: "Total US Stock Market", currency: "AUD", currentPrice: 7945, priceUpdated: new Date("2021-02-04") },
+                { symbol: "VEU.AT", targetPercent: 33, numHeldUnits: 150, name: "All World ex-US", currency: "AUD", currentPrice: 7945, priceUpdated: new Date("2021-02-04") },
+                { symbol: "VHY.AT", targetPercent: 33, numHeldUnits: 150, name: "Australia High Yield", currency: "AUD", currentPrice: 7945, priceUpdated: new Date("2021-02-04") },
+                { symbol: "VAP.AT", targetPercent: 33, numHeldUnits: 150, name: "Australia Property", currency: "AUD", currentPrice: 7945, priceUpdated: new Date("2021-02-04") },
             ]
         }
 
