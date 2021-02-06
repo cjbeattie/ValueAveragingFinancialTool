@@ -2,6 +2,14 @@ const express = require('express');
 const { body, validationResult } = require("express-validator");
 const { StatusCodes } = require("http-status-codes");
 const ValuePath = require('../models/valuePathModel');
+const differenceInMonths = require('date-fns/differenceInMonths');
+const differenceInQuarters = require('date-fns/differenceInQuarters');
+const differenceInYears = require('date-fns/differenceInYears');
+const addMonths = require('date-fns/addMonths');
+const addQuarters = require('date-fns/addQuarters');
+const addYears = require('date-fns/addYears');
+const parseISO = require('date-fns/parseISO');
+const _ = require('lodash');
 
 
 const router = express.Router();
@@ -122,12 +130,105 @@ router.post(
         } else {
             // Data from form is valid.
             const formData = req.body; // extract the data from POST
-            console.log(formData)
-            // const R = (formData.r + formData.g) / 2
-            // const periodsToGo_n = // endDate - startDate
-            // const finalPeriod_T =
-            ValuePath.create(formData, (error, formData) => {
-                res.status(StatusCodes.CREATED).send(formData);
+            console.log("form data: ", formData)
+
+            // ********** CALCULATE VALUE PATH *****************
+            const investmentGoal = parseInt(formData.investmentGoal);
+            const endDate = parseISO(formData.endDate);
+            const startDate = parseISO(formData.startDate);
+            const cycle = formData.cycle;
+            const r = parseFloat(formData.r);
+            const g = parseFloat(formData.g);
+            const currency = formData.currency;
+            const currentValue = parseFloat(formData.currentValue);
+
+
+            // calculate R
+            const R = (r + g) / 2
+            console.log("R: ", R)
+
+            // calculate n
+
+            let periodsToGo_n = null;
+            if (cycle === "Monthly") {
+                periodsToGo_n = differenceInMonths(endDate, startDate)
+            } else if (cycle === "Quarterly") {
+                periodsToGo_n = differenceInQuarters(endDate, startDate)
+            } else if (cycle === "Annually") {
+                periodsToGo_n = differenceInYears(endDate, startDate)
+            } else {
+                return res.status(StatusCodes.BAD_REQUEST).send("Invalid cycle");
+            }
+
+            // calculate T
+            const finalPeriod_T = periodsToGo_n / (1 - (1 + R) ** periodsToGo_n * currentValue / investmentGoal);
+
+            // calculate t
+            const timeIndexNow_t = finalPeriod_T - periodsToGo_n;
+
+            // calculate $C
+            const C = investmentGoal / (finalPeriod_T * (1 + R) ** finalPeriod_T);
+
+            // calculate value path
+
+            const path = [];
+
+            for (let i = 0; i <= periodsToGo_n; i++) {
+                // calculate value for this period
+                const index = i + timeIndexNow_t;
+                const targetAmount = Math.round(C * index * (1 + R) ** index);
+
+                // calculate date for this period
+                let periodDate = null;// start date + index * number of months/quarters/years
+                if (cycle === "Monthly") {
+                    periodDate = addMonths(startDate, i)
+                } else if (cycle === "Quarterly") {
+                    periodDate = addQuarters(startDate, i)
+                } else if (cycle === "Annually") {
+                    periodDate = addYears(startDate, i)
+                }
+
+                // construct the object for that period
+                periodObject = {
+                    cycleDate: periodDate,
+                    cycleValue: targetAmount
+                }
+
+                // construct the object for that period and add to path array
+                path.push(periodObject)
+            }
+
+            const parsedFormData = {
+                investmentGoal: investmentGoal,
+                endDate: endDate,
+                startDate: startDate,
+                cycle: cycle,
+                r: r,
+                g: g,
+                currency: currency,
+                currentValue: currentValue,
+            };
+
+            const calculatedVariables = {
+                R: R,
+                finalPeriod_T: finalPeriod_T,
+                timeIndexNow_t: timeIndexNow_t,
+                C: C,
+            }
+
+            const finalData = _.clone(parsedFormData);
+            finalData.valuePath = path;
+
+            // adjustedData.valuePath = path;
+            console.log("parsedFormData: ", parsedFormData)
+            console.log("calculatedVariables: ", calculatedVariables)
+            console.log("Final data: ", finalData);
+
+            ValuePath.create(finalData, (error, finalData) => {
+                if (error) {
+                    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({ error }); // { error } is the same as error: error!!!
+                }
+                res.status(StatusCodes.CREATED).send(finalData, parsedFormData, calculatedVariables);
             });
         }
     }

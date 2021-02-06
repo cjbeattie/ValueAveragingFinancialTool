@@ -118,6 +118,7 @@ export default function ValuePath() {
                                         investmentGoal: e.target.value,
                                     }))
                                 }
+                                type="number"
                             />
                         </Grid>
                         <Grid item xs={12} sm={6}>
@@ -140,6 +141,8 @@ export default function ValuePath() {
                                     KeyboardButtonProps={{
                                         'aria-label': 'change date',
                                     }}
+                                // openTo="month"
+                                // views={["year", "month"]}
                                 />
                             </MuiPickersUtilsProvider>
                         </Grid>
@@ -160,6 +163,7 @@ export default function ValuePath() {
                                         r: e.target.value,
                                     }))
                                 }
+                                type="number"
                             />
                         </Grid>
                         <Grid item xs={12} sm={6}>
@@ -179,6 +183,7 @@ export default function ValuePath() {
                                         g: e.target.value,
                                     }))
                                 }
+                                type="number"
                             />
                         </Grid>
 
@@ -225,6 +230,7 @@ export default function ValuePath() {
                                         currentValue: e.target.value,
                                     }))
                                 }
+                                type="number"
                             />
                         </Grid>
                         <Grid item xs={12} sm={6}>
@@ -245,7 +251,7 @@ export default function ValuePath() {
                                 >
                                     <MenuItem value="Monthly" selected="selected" label="Monthly">Monthly</MenuItem>
                                     <MenuItem value="Quarterly" selected="selected" label="Quarterly">Quarterly</MenuItem>
-                                    <MenuItem value="Yearly" selected="selected" label="Yearly">Yearly</MenuItem>
+                                    <MenuItem value="Annually" selected="selected" label="Annually">Annually</MenuItem>
                                 </Select>
                             </FormControl>
                         </Grid>
