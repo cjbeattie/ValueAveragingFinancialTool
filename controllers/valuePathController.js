@@ -121,10 +121,13 @@ router.post(
             res.status(StatusCodes.BAD_REQUEST).send(locals);
         } else {
             // Data from form is valid.
-            const valuePath = req.body; // extract the data from POST
-            console.log(valuePath)
-            ValuePath.create(valuePath, (error, valuePath) => {
-                res.status(StatusCodes.CREATED).send(valuePath);
+            const formData = req.body; // extract the data from POST
+            console.log(formData)
+            // const R = (formData.r + formData.g) / 2
+            // const periodsToGo_n = // endDate - startDate
+            // const finalPeriod_T =
+            ValuePath.create(formData, (error, formData) => {
+                res.status(StatusCodes.CREATED).send(formData);
             });
         }
     }
