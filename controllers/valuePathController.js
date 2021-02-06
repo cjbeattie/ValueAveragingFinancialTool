@@ -122,6 +122,7 @@ router.post(
         } else {
             // Data from form is valid.
             const valuePath = req.body; // extract the data from POST
+            console.log(valuePath)
             ValuePath.create(valuePath, (error, valuePath) => {
                 res.status(StatusCodes.CREATED).send(valuePath);
             });

@@ -13,6 +13,7 @@ const valuePathSchema = Schema({
     r: Number,
     g: Number,
     currency: String,
+    currentValue: Number,
     valuePath: [{
         cycleDate: Date,
         cycleValue: Number,
