@@ -144,7 +144,7 @@ router.post(
 
 
             // calculate R
-            const R = (r + g) / 2
+            const R = (r + g) / 2 / 100;
             console.log("R: ", R)
 
             // calculate n
@@ -211,6 +211,7 @@ router.post(
 
             const calculatedVariables = {
                 R: R,
+                periodsToGo_n: periodsToGo_n,
                 finalPeriod_T: finalPeriod_T,
                 timeIndexNow_t: timeIndexNow_t,
                 C: C,
