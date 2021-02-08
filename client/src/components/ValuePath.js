@@ -34,6 +34,9 @@ import {
     KeyboardDatePicker,
 } from '@material-ui/pickers';
 import axios from "axios";
+import { useParams } from 'react-router-dom'
+import { useHistory } from "react-router-dom";
+
 
 
 const useStyles = makeStyles((theme) => ({
@@ -60,21 +63,27 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function ValuePath() {
+export default function ValuePath(props) {
     const classes = useStyles();
 
     const [created, setCreated] = React.useState(false);
     const [formData, setFormData] = React.useState({
-        investmentGoal: "",
-        endDate: new Date(),
+        investmentGoal: 10000000,
+        endDate: new Date('January 1, 2041 00:00:00'),
         startDate: new Date(),
-        cycle: "",
-        r: "",
-        g: "",
-        currency: "",
+        cycle: "Annually",
+        r: 0.5,
+        g: 1,
+        currency: "AUD",
+        currentValue: 3000
     });
-    const [currentValuePathID, setCurrentValuePathID] = React.useState(null);
-    const [currentUser, setCurrentUser] = React.useState(null);
+    // const [currentUser, setCurrentUser] = React.useState(null);
+
+    let { windowUserID } = useParams();
+    console.log("windowUserID: ", windowUserID);
+
+    let history = useHistory();
+
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -84,26 +93,29 @@ export default function ValuePath() {
             valuePaths: [],
         }
 
-        // Check if no user
-        if (window.location.pathname === "/valuepath") {
+        // Check if no user  // OLD: window.location.pathname === "/valuepath"
+        if (!windowUserID) {
             // Create the user
             axios
                 .post("/api/user", blankUser)
                 .then((userRes) => {
                     console.log("Response to user creation", userRes);
-                    setCurrentUser({
-                        ...currentUser,
-                        _id: userRes.data._id,
-                    })
-                    window.location.pathname = `valuepath/${userRes.data._id}`
+                    // setCurrentUser({
+                    //     ...currentUser,
+                    //     _id: userRes.data._id,
+                    // })
+
+                    // window.location.pathname = `valuepath/${userRes.data._id}`
                     // window.location.href = `${window.location.hostname}/${userRes.data._id}` // Production?
+                    // history.push(`/${userRes.data._id}/valuepath`);
+                    // history.push(`/valuepath/${userRes.data._id}`);
+
 
                     // Create the value path
                     axios
                         .post("/api/valuePath", formData)
                         .then((valuePathRes) => {
                             console.log("Response to value path creation", valuePathRes);
-                            setCurrentValuePathID(valuePathRes.data._id)
 
                             // let newListID = res.data._id;
                             // let tempLists = user.lists;
@@ -126,6 +138,8 @@ export default function ValuePath() {
                                 .then((res) => {
                                     console.log("Response to adding value path to user", res);
                                     setCreated(true);
+                                    history.push(`/${userRes.data._id}/valuepath`);
+                                    props.updateUserState(tempUser);
                                 })
                                 .catch((error) => {
                                     console.log("Error to adding value path to user", error);
@@ -139,7 +153,7 @@ export default function ValuePath() {
                     console.log("Error to user creation", error);
                 });
         } else {
-            console.log("yay it detected that a user already exists!")
+            console.log("yay it detected that a user already exists! The windowUserID is ", windowUserID)
         }
 
         // // Old - add value path directly without user
@@ -166,6 +180,7 @@ export default function ValuePath() {
                 <Typography component="h1" variant="h5">
                     Value Path Settings
                 </Typography>
+                {windowUserID ? <h2>User ID: {windowUserID}</h2> : <h2>No user</h2>}
                 <form className={classes.form} noValidate>
                     <Grid container spacing={2}>
                         <Grid item xs={12} sm={6}>
@@ -177,7 +192,7 @@ export default function ValuePath() {
                                 fullWidth
                                 id="investmentGoal"
                                 label="Investment Goal"
-                                autoFocus
+                                // autoFocus
                                 value={formData.investmentGoal}
                                 onChange={(e) =>
                                     setFormData((state) => ({
@@ -222,8 +237,8 @@ export default function ValuePath() {
                                 fullWidth
                                 id="r"
                                 label="r"
-                                autoFocus
-                                value={formData.rl}
+                                // autoFocus
+                                value={formData.r}
                                 onChange={(e) =>
                                     setFormData((state) => ({
                                         ...state,
@@ -242,7 +257,7 @@ export default function ValuePath() {
                                 fullWidth
                                 id="g"
                                 label="g"
-                                autoFocus
+                                // autoFocus
                                 value={formData.g}
                                 onChange={(e) =>
                                     setFormData((state) => ({
@@ -289,7 +304,7 @@ export default function ValuePath() {
                                 fullWidth
                                 id="currentValue"
                                 label="Current Value"
-                                autoFocus
+                                // autoFocus
                                 value={formData.currentValue}
                                 onChange={(e) =>
                                     setFormData((state) => ({

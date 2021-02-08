@@ -80,10 +80,33 @@ function ResponsiveDrawer(props) {
     const classes = useStyles();
     const theme = useTheme();
     const [mobileOpen, setMobileOpen] = React.useState(false);
+    const [user, setUser] = React.useState(null);
 
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
     };
+
+    const updateUserState = (user) => {
+        setUser(user);
+    }
+
+    let myListItems;
+    if (user) {
+        const portfolioLink = `/${user._id}/portfolio`;
+        const valuepathLink = `/${user._id}/valuepath`;
+
+        myListItems =
+            <>
+                <ListItemLink to={portfolioLink} primary="Portfolio" icon={<AttachMoneyIcon />} />
+                <ListItemLink to={valuepathLink} primary="Value Path" icon={<ShowChartIcon />} />
+            </>;
+    } else {
+        myListItems =
+            <>
+                <ListItemLink to="/portfolio" primary="Portfolio" icon={<AttachMoneyIcon />} />
+                <ListItemLink to="/valuepath" primary="Value Path" icon={<ShowChartIcon />} />
+            </>;
+    }
 
     const drawer = (
         <div>
@@ -106,8 +129,10 @@ function ResponsiveDrawer(props) {
                     <ListItemIcon><ShowChartIcon /></ListItemIcon>
                     <ListItemText primary="Value Path Settings" />
                 </ListItem> */}
-                <ListItemLink to="/portfolio" primary="Portfolio" icon={<AttachMoneyIcon />} />
-                <ListItemLink to="/valuepath" primary="Value Path" icon={<ShowChartIcon />} />
+
+                {/* <ListItemLink to="/portfolio" primary="Portfolio" icon={<AttachMoneyIcon />} />
+                <ListItemLink to="/valuepath" primary="Value Path" icon={<ShowChartIcon />} /> */}
+                {myListItems}
             </List>
             <Divider />
             <List>
@@ -200,8 +225,12 @@ function ResponsiveDrawer(props) {
                 </Typography> */}
                 <Switch>
                     <Route exact path="/"><Portfolio /></Route>
-                    <Route path="/valuepath"><ValuePath /></Route>
-                    <Route path="/portfolio"><Portfolio /></Route>
+                    <Route path="/valuepath"><ValuePath updateUserState={updateUserState} /></Route>
+                    <Route path="/portfolio"><Portfolio updateUserState={updateUserState} /></Route>
+                    {/* <Route path="/valuepath/:windowUserID"><ValuePath /></Route>
+                    <Route path="/portfolio/:windowUserID"><Portfolio /></Route> */}
+                    <Route path="/:windowUserID/valuepath"><ValuePath /></Route>
+                    <Route path="/:windowUserID/portfolio"><Portfolio /></Route>
                 </Switch>
             </main>
         </div>
