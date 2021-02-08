@@ -21,6 +21,10 @@ import { makeStyles, useTheme } from '@material-ui/core/styles';
 import { NavLink, Route, Switch } from "react-router-dom";
 import Portfolio from './Portfolio';
 import ValuePath from './ValuePath';
+import { useParams } from 'react-router-dom'
+import axios from "axios";
+
+
 
 const drawerWidth = 240;
 
@@ -89,6 +93,42 @@ function ResponsiveDrawer(props) {
     const updateUserState = (user) => {
         setUser(user);
     }
+
+    const checkForUserInURL = (windowUserID) => {
+        console.log("in checkForUserInURL. windowUserID and user is ", windowUserID, user);
+        // console.log("window.location.hostname is ", location.hostname)
+
+        if (windowUserID && !user) {
+            // const tempURL = `http://localhost:4000/api/user/${windowUserID}`;
+            const tempURL = `/api/user/${windowUserID}`;
+
+            axios.get(tempURL)
+                .then((res) => {
+                    console.log("Response", res);
+                    setUser(res.data)
+                })
+                .catch((error) => {
+                    console.log("Error", error);
+                });
+        }
+
+    }
+
+    // let { windowUserID } = useParams();
+
+    // React.useEffect(() => {
+    //     console.log("in useEffect. windowUserID and user is ", windowUserID, user);
+    //     if (windowUserID && !user) {
+    //         axios.get(`api/user/${windowUserID}`)
+    //             .then((res) => {
+    //                 console.log("Response", res);
+    //                 setUser(res.data)
+    //             })
+    //             .catch((error) => {
+    //                 console.log("Error", error);
+    //             });
+    //     }
+    // }, []);
 
     let myListItems;
     if (user) {
@@ -184,11 +224,11 @@ function ResponsiveDrawer(props) {
                 <Switch>
                     <Route exact path="/"><Portfolio /></Route>
                     <Route path="/valuepath"><ValuePath updateUserState={updateUserState} /></Route>
-                    <Route path="/portfolio"><Portfolio updateUserState={updateUserState} /></Route>
+                    <Route path="/portfolio"><Portfolio updateUserState={updateUserState} checkForUserInURL={checkForUserInURL} /></Route>
                     {/* <Route path="/valuepath/:windowUserID"><ValuePath /></Route>
                     <Route path="/portfolio/:windowUserID"><Portfolio /></Route> */}
                     <Route path="/:windowUserID/valuepath"><ValuePath /></Route>
-                    <Route path="/:windowUserID/portfolio"><Portfolio /></Route>
+                    <Route path="/:windowUserID/portfolio"><Portfolio user={user} checkForUserInURL={checkForUserInURL} /></Route>
                 </Switch>
             </main>
         </div>
