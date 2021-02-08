@@ -35,6 +35,8 @@ app.use(
 // app.use("/api/category", categoryController);
 // app.use('/api/sessions', sessionsController)
 app.use("/api/valuePath", valuePathController);
+app.use("/api/portfolio", portfolioController);
+
 
 
 if (process.env.NODE_ENV === 'production') {

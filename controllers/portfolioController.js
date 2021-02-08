@@ -2,6 +2,15 @@ const express = require('express');
 const { body, validationResult } = require("express-validator");
 const { StatusCodes } = require("http-status-codes");
 const Portfolio = require('../models/portfolioModel');
+const differenceInMonths = require('date-fns/differenceInMonths');
+const differenceInQuarters = require('date-fns/differenceInQuarters');
+const differenceInYears = require('date-fns/differenceInYears');
+const addMonths = require('date-fns/addMonths');
+const addQuarters = require('date-fns/addQuarters');
+const addYears = require('date-fns/addYears');
+const parseISO = require('date-fns/parseISO');
+const _ = require('lodash');
+
 
 const router = express.Router();
 
@@ -26,19 +35,40 @@ const isAuthenticatedAdmin = (req, res, next) => {
 };
 
 // Seed database
-router.get("/seed", (req, res) => {
-    Portfolio.create(
-        [{
-            heldStocks: [
-                { symbol: "VAS.AX", targetPercent: 30, numHeldUnits: 100, name: "Australia ASX", currency: "AUD", currentPrice: 8176, priceUpdated: new Date("2021-02-04") },
-                { symbol: "VGB.AT", targetPercent: 33, numHeldUnits: 150, name: "Australia Bonds", currency: "AUD", currentPrice: 7945, priceUpdated: new Date("2021-02-04") },
-                { symbol: "VTS.AT", targetPercent: 33, numHeldUnits: 150, name: "Total US Stock Market", currency: "AUD", currentPrice: 7945, priceUpdated: new Date("2021-02-04") },
-                { symbol: "VEU.AT", targetPercent: 33, numHeldUnits: 150, name: "All World ex-US", currency: "AUD", currentPrice: 7945, priceUpdated: new Date("2021-02-04") },
-                { symbol: "VHY.AT", targetPercent: 33, numHeldUnits: 150, name: "Australia High Yield", currency: "AUD", currentPrice: 7945, priceUpdated: new Date("2021-02-04") },
-                { symbol: "VAP.AT", targetPercent: 33, numHeldUnits: 150, name: "Australia Property", currency: "AUD", currentPrice: 7945, priceUpdated: new Date("2021-02-04") },
-            ]
-        }
+router.get("/seed", isAuthenticatedAdmin, (req, res) => {
 
+    // let HomeID = List.find({ "name": { $eq: "Home" } }, (err, active) => {
+    //     console.log(active);
+    //     res.send(active);
+    // }
+
+    Portfolio.create(
+        [
+            {
+                // 1. Seed category first http://localhost:4000/category/seed
+                // 2. Copy your local category IDs into the correct places below
+                // 3. Seed these portfolios http://localhost:4000/portfolio/seed
+                category: "600646412e02284a3b302072",
+                tasks: [{
+                    description: "Fix window",
+                    isCompleted: false,
+                },
+                {
+                    description: "Sweep floors",
+                    isCompleted: false,
+                }]
+            },
+            {
+                category: "600646412e02284a3b302073",
+                tasks: [{
+                    description: "Fill out exit tickets",
+                    isCompleted: false,
+                },
+                {
+                    description: "Do homework",
+                    isCompleted: false,
+                }]
+            },
         ],
         (error, portfolios) => {
             if (error) {
@@ -51,23 +81,35 @@ router.get("/seed", (req, res) => {
 
 // CRUD (OR MORE LIKE RCUD!)
 
-// READ ALL - find all animals
+// READ ALL - find all portfolios
+// router.get("/", isAuthenticatedNormal, (req, res) => {
+//     List.find({}, (error, lists) => {
+//         if (error) {
+//             return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({ error }); // { error } is the same as error: error!!!
+//         }
+//         res.status(StatusCodes.OK).send(lists);
+//     }).populate('category');
+// });
+
+// READ ALL - WITH POPULATE
 router.get("/", isAuthenticatedNormal, (req, res) => {
-    Animal.find({}, (error, animals) => {
+    Portfolio.find({}).populate('category').exec((error, portfolios) => {
         if (error) {
             return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({ error }); // { error } is the same as error: error!!!
         }
-        res.status(StatusCodes.OK).send(animals);
+        console.log("this is the current user:")
+        console.log(req.session.currentUser)
+        res.status(StatusCodes.OK).send(portfolios);
     });
 });
 
-// READ ONE - find one animal
+// READ ONE - find one value path
 router.get("/:id", isAuthenticatedNormal, (req, res) => {
-    Animal.findById(req.params.id, (error, animal) => {
+    Portolio.findById(req.params.id, (error, portfolio) => {
         if (error) {
             return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({ error }); // { error } is the same as error: error!!!
         }
-        res.status(StatusCodes.OK).send(animal);
+        res.status(StatusCodes.OK).send(portfolio);
     });
 });
 
@@ -75,7 +117,7 @@ router.get("/:id", isAuthenticatedNormal, (req, res) => {
 router.post(
     "/",
     isAuthenticatedAdmin,
-    body("name", "Min Length of 3").trim().isLength({ min: 3 }),
+    // body("category", "Min Length of 3").trim().isLength({ min: 3 }),
     // body("score", "Must be a number").trim().isNumeric().isLength({ max: 3 }),
     (req, res) => {
         const errors = validationResult(req);
@@ -83,13 +125,18 @@ router.post(
         if (!errors.isEmpty()) {
             // There are errors.
             // Errors are returned in an array using `errors.array()`.
-            const locals = { animal: req.body, errors: errors.array() };
+            const locals = { portfolio: req.body, errors: errors.array() };
             res.status(StatusCodes.BAD_REQUEST).send(locals);
         } else {
             // Data from form is valid.
-            const animal = req.body; // extract the data from POST
-            Animal.create(animal, (error, animal) => {
-                res.status(StatusCodes.CREATED).send(animal);
+            const formData = req.body; // extract the data from POST
+            console.log("form data: ", formData)
+
+            Portfolio.create(formData, (error, formData) => {
+                if (error) {
+                    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({ error }); // { error } is the same as error: error!!!
+                }
+                res.status(StatusCodes.CREATED).send(formData);
             });
         }
     }
@@ -99,7 +146,7 @@ router.post(
 router.put(
     "/:id",
     isAuthenticatedAdmin,
-    body("name", "Min Length of 3").trim().isLength({ min: 3 }),
+    // body("name", "Min Length of 3").trim().isLength({ min: 3 }),
     // body("score", "Must be a number").trim().isNumeric().isLength({ max: 3 }),
     (req, res) => {
         const errors = validationResult(req);
@@ -107,18 +154,21 @@ router.put(
         if (!errors.isEmpty()) {
             // There are errors.
             // Errors are returned in an array using `errors.array()`.
-            const locals = { animal: req.body, errors: errors.array() };
+            const locals = { portfolio: req.body, errors: errors.array() };
             res.status(StatusCodes.BAD_REQUEST).send(locals);
         } else {
-            Animal.findByIdAndUpdate(
+            Portfolio.findByIdAndUpdate(
                 req.params.id, // 1st arg - criteria => id
                 req.body, // 2nd arg - what to update
+                // { category: somecategory, tasks: []},
                 { new: true }, // 3rd arg - { new : true }
-                (error, animal) => {
+                // { returnOriginal: false },
+                (error, portfolio) => {
                     if (error) {
                         return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({ error }); // { error } is the same as error: error!!!
                     }
-                    res.status(StatusCodes.OK).send(animal);
+                    console.log("req.body", req.body)
+                    res.status(StatusCodes.OK).send(portfolio);
                 }
             );
         }
@@ -127,11 +177,11 @@ router.put(
 
 // DELETE
 router.delete("/:id", isAuthenticatedAdmin, (req, res) => {
-    Animal.findByIdAndRemove(req.params.id, (error, animal) => {
+    Portfolio.findByIdAndRemove(req.params.id, (error, portfolio) => {
         if (error) {
             return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({ error }); // { error } is the same as error: error!!!
         }
-        res.status(StatusCodes.OK).send(animal);
+        res.status(StatusCodes.OK).send(portfolio);
     });
 });
 

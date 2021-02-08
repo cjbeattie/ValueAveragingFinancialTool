@@ -15,17 +15,28 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function AddToPortfolioButton() {
+export default function AddToPortfolioButton(props) {
     const classes = useStyles();
 
     const [open, setOpen] = React.useState(false);
+    const [dialogText, setDialogText] = React.useState("");
 
     const handleClickOpen = () => {
         setOpen(true);
     };
 
-    const handleClose = () => {
+    const handleDialogTextChange = (e) => {
+        setDialogText(e.target.value);
+    };
+
+    const handleCancel = () => {
         setOpen(false);
+    };
+
+    const handleSubmit = () => {
+        setOpen(false);
+        props.handleAddNew(dialogText);
+        setDialogText("");
     };
 
     return (
@@ -40,28 +51,29 @@ export default function AddToPortfolioButton() {
             >
                 Add to Portfolio
             </Button>
-            <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-                <DialogTitle id="form-dialog-title">Subscribe</DialogTitle>
+            <Dialog open={open} onClose={handleCancel} aria-labelledby="form-dialog-title">
+                <DialogTitle id="form-dialog-title">Add To Portfolio</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        To subscribe to this website, please enter your email address here. We will send updates
-                        occasionally.
+                        Enter the name of the stock ticker symbol below to add this stock to your portfolio.
                     </DialogContentText>
                     <TextField
                         autoFocus
                         margin="dense"
-                        id="name"
-                        label="Email Address"
-                        type="email"
+                        id="symbol"
+                        label="Stock Symbol"
+                        type="text"
                         fullWidth
+                        value={dialogText}
+                        onChange={handleDialogTextChange}
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleClose} color="primary">
+                    <Button onClick={handleCancel} color="primary">
                         Cancel
                     </Button>
-                    <Button onClick={handleClose} color="primary">
-                        Subscribe
+                    <Button onClick={handleSubmit} color="primary">
+                        Submit
                     </Button>
                 </DialogActions>
             </Dialog>
