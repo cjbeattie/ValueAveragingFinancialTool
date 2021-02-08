@@ -225,11 +225,11 @@ router.post(
             console.log("calculatedVariables: ", calculatedVariables)
             console.log("Final data: ", finalData);
 
-            ValuePath.create(finalData, (error, finalData) => {
+            ValuePath.create(finalData, (error, valuePath) => {
                 if (error) {
                     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({ error }); // { error } is the same as error: error!!!
                 }
-                res.status(StatusCodes.CREATED).send(finalData, parsedFormData, calculatedVariables);
+                res.status(StatusCodes.CREATED).send(valuePath, parsedFormData, calculatedVariables);
             });
         }
     }

@@ -4,7 +4,9 @@ const mongoose = require("mongoose");
 // const listController = require("./controllers/list-controller");
 // const categoryController = require("./controllers/category-controller");
 // const sessionsController = require('./controllers/sessions-controller.js');
-const valuePathController = require('./controllers/valuePathController')
+const valuePathController = require('./controllers/valuePathController');
+const portfolioController = require('./controllers/portfolioController');
+const userController = require('./controllers/userController')
 const session = require("express-session");
 // const path = require('path'); // setup the mongoose connection (app.js)
 
@@ -36,6 +38,8 @@ app.use(
 // app.use('/api/sessions', sessionsController)
 app.use("/api/valuePath", valuePathController);
 app.use("/api/portfolio", portfolioController);
+app.use("/api/user", userController);
+
 
 
 

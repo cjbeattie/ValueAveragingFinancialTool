@@ -73,18 +73,85 @@ export default function ValuePath() {
         g: "",
         currency: "",
     });
+    const [currentValuePathID, setCurrentValuePathID] = React.useState(null);
+    const [currentUser, setCurrentUser] = React.useState(null);
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        axios
-            .post("/api/valuePath", formData)
-            .then((res) => {
-                console.log("Response", res);
-                setCreated(true);
-            })
-            .catch((error) => {
-                console.log("Error", error);
-            });
+
+        const blankUser = {
+            portfolios: [],
+            valuePaths: [],
+        }
+
+        // Check if no user
+        if (window.location.pathname === "/valuepath") {
+            // Create the user
+            axios
+                .post("/api/user", blankUser)
+                .then((userRes) => {
+                    console.log("Response to user creation", userRes);
+                    setCurrentUser({
+                        ...currentUser,
+                        _id: userRes.data._id,
+                    })
+                    window.location.pathname = `valuepath/${userRes.data._id}`
+                    // window.location.href = `${window.location.hostname}/${userRes.data._id}` // Production?
+
+                    // Create the value path
+                    axios
+                        .post("/api/valuePath", formData)
+                        .then((valuePathRes) => {
+                            console.log("Response to value path creation", valuePathRes);
+                            setCurrentValuePathID(valuePathRes.data._id)
+
+                            // let newListID = res.data._id;
+                            // let tempLists = user.lists;
+                            // let updatedUser = {
+                            //     ...user,
+                            //     lists: [...tempLists, newListID],
+                            // };
+                            const tempValuePaths = [];
+                            tempValuePaths.push(valuePathRes.data._id);
+
+                            const tempUser = {
+                                ...blankUser,
+                                _id: userRes.data._id,
+                                valuePaths: tempValuePaths,
+                            }
+
+                            // Add value path ID to the user
+                            axios
+                                .put(`/api/user/${userRes.data._id}`, tempUser)
+                                .then((res) => {
+                                    console.log("Response to adding value path to user", res);
+                                    setCreated(true);
+                                })
+                                .catch((error) => {
+                                    console.log("Error to adding value path to user", error);
+                                });
+                        })
+                        .catch((error) => {
+                            console.log("Error to value path creation", error);
+                        });
+                })
+                .catch((error) => {
+                    console.log("Error to user creation", error);
+                });
+        } else {
+            console.log("yay it detected that a user already exists!")
+        }
+
+        // // Old - add value path directly without user
+        // axios
+        //     .post("/api/valuePath", formData)
+        //     .then((res) => {
+        //         console.log("Response", res);
+        //         setCreated(true);
+        //     })
+        //     .catch((error) => {
+        //         console.log("Error", error);
+        //     });
     };
 
 
