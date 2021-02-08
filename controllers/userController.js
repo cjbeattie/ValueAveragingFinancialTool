@@ -116,15 +116,25 @@ router.get("/", isAuthenticatedNormal, (req, res) => {
     });
 });
 
-// READ ONE
+// READ ONE -- WITH POPULATE
 router.get("/:id", isAuthenticatedNormal, (req, res) => {
-    User.findById(req.params.id, (error, user) => {
+    User.findById(req.params.id).populate('valuePaths').populate('portfolios').exec((error, user) => {
         if (error) {
             return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({ error }); // { error } is the same as error: error!!!
         }
         res.status(StatusCodes.OK).send(user);
     });
 });
+
+// // READ ONE
+// router.get("/:id", isAuthenticatedNormal, (req, res) => {
+//     User.findById(req.params.id, (error, user) => {
+//         if (error) {
+//             return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({ error }); // { error } is the same as error: error!!!
+//         }
+//         res.status(StatusCodes.OK).send(user);
+//     });
+// });
 
 // UPDATE
 router.put(

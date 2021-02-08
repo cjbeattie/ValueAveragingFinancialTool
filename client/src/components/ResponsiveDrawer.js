@@ -228,7 +228,7 @@ function ResponsiveDrawer(props) {
                     {/* <Route path="/valuepath/:windowUserID"><ValuePath /></Route>
                     <Route path="/portfolio/:windowUserID"><Portfolio /></Route> */}
                     <Route path="/:windowUserID/valuepath"><ValuePath /></Route>
-                    <Route path="/:windowUserID/portfolio"><Portfolio user={user} checkForUserInURL={checkForUserInURL} /></Route>
+                    <Route path="/:windowUserID/portfolio"><Portfolio user={user} updateUserState={updateUserState} checkForUserInURL={checkForUserInURL} /></Route>
                 </Switch>
             </main>
         </div>

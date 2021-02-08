@@ -29,11 +29,36 @@ const Portfolio = (props) => {
             console.log("user state is null")
             return;
         }
-        console.log(props.user._id)
+        console.log("Adding new. props.user._id is ", props.user._id)
+        console.log("Adding new. props.user is ", props.user)
+        console.log("Adding new. props.user.portfolios[0]._id is ", props.user.portfolios[0]._id)
+
+        const tempHeldStocks = props.user.portfolios[0].heldStocks
+
+        tempHeldStocks.push({
+            symbol: dialogText,
+            targetPercent: 0,
+            numHeldUnits: 0,
+            currencyCode: "",
+        })
+
+        const tempPortfolio = {
+            heldStocks: tempHeldStocks
+        }
+
         axios
-            .put(`/api/portfolio/${props.user._id}`, dialogText)
+            .put(`/api/portfolio/${props.user.portfolios[0]._id}`, tempPortfolio)
             .then((res) => {
                 console.log("Response", res);
+                const tempPortfoliosList = [
+                    ...props.user.portfolios
+                ]
+                tempPortfoliosList.push(res.data._id)
+                const tempUser = {
+                    ...props.user,
+                    portfolios: tempPortfoliosList
+                }
+                props.updateUserState(tempUser)
                 // setCreated(true);
             })
             .catch((error) => {
