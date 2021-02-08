@@ -93,6 +93,10 @@ export default function ValuePath(props) {
             valuePaths: [],
         }
 
+        const blankPortfolio = {
+            heldStocks: [],
+        }
+
         // Check if no user  // OLD: window.location.pathname === "/valuepath"
         if (!windowUserID) {
             // Create the user
@@ -100,53 +104,48 @@ export default function ValuePath(props) {
                 .post("/api/user", blankUser)
                 .then((userRes) => {
                     console.log("Response to user creation", userRes);
-                    // setCurrentUser({
-                    //     ...currentUser,
-                    //     _id: userRes.data._id,
-                    // })
 
-                    // window.location.pathname = `valuepath/${userRes.data._id}`
-                    // window.location.href = `${window.location.hostname}/${userRes.data._id}` // Production?
-                    // history.push(`/${userRes.data._id}/valuepath`);
-                    // history.push(`/valuepath/${userRes.data._id}`);
-
-
-                    // Create the value path
+                    // Create the value path and empty portfolio
+                    const requestValuePath = axios.post("/api/valuePath", formData);
+                    const requestPortfolio = axios.post("/api/portfolio", blankPortfolio);
                     axios
-                        .post("/api/valuePath", formData)
-                        .then((valuePathRes) => {
-                            console.log("Response to value path creation", valuePathRes);
+                        // .post("/api/valuePath", formData)
+                        .all([requestValuePath, requestPortfolio])
+                        // .then((valuePathRes) => {
+                        .then(
+                            axios.spread((...responses) => {
+                                const valuePathRes = responses[0];
+                                const portfolioRes = responses[1];
+                                console.log("Response to value path creation", valuePathRes);
+                                console.log("REsponse to portfolio creation", portfolioRes);
 
-                            // let newListID = res.data._id;
-                            // let tempLists = user.lists;
-                            // let updatedUser = {
-                            //     ...user,
-                            //     lists: [...tempLists, newListID],
-                            // };
-                            const tempValuePaths = [];
-                            tempValuePaths.push(valuePathRes.data._id);
+                                const tempValuePaths = [];
+                                tempValuePaths.push(valuePathRes.data._id);
 
-                            const tempUser = {
-                                ...blankUser,
-                                _id: userRes.data._id,
-                                valuePaths: tempValuePaths,
-                            }
+                                const tempPortfolios = [];
+                                tempPortfolios.push(portfolioRes.data._id);
 
-                            // Add value path ID to the user
-                            axios
-                                .put(`/api/user/${userRes.data._id}`, tempUser)
-                                .then((res) => {
-                                    console.log("Response to adding value path to user", res);
-                                    setCreated(true);
-                                    history.push(`/${userRes.data._id}/valuepath`);
-                                    props.updateUserState(tempUser);
-                                })
-                                .catch((error) => {
-                                    console.log("Error to adding value path to user", error);
-                                });
-                        })
+                                const tempUser = {
+                                    _id: userRes.data._id,
+                                    portfolios: tempPortfolios,
+                                    valuePaths: tempValuePaths,
+                                }
+
+                                // Add new value path and portfolio IDs to the user
+                                axios
+                                    .put(`/api/user/${userRes.data._id}`, tempUser)
+                                    .then((res) => {
+                                        console.log("Response to adding value path to user", res);
+                                        setCreated(true);
+                                        history.push(`/${userRes.data._id}/valuepath`);
+                                        props.updateUserState(tempUser);
+                                    })
+                                    .catch((error) => {
+                                        console.log("Error to adding value path to user", error);
+                                    });
+                            }))
                         .catch((error) => {
-                            console.log("Error to value path creation", error);
+                            console.log("Error to value path and portfolio creation", error);
                         });
                 })
                 .catch((error) => {
