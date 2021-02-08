@@ -159,12 +159,15 @@ router.put(
         } else {
             console.log("got here! req.body is ", req.body)
 
+            const tempPortfolio = req.body
+
+            // AXIOS CALL HERE! Get things and update tempPortfolio ******************************
 
 
 
             Portfolio.findByIdAndUpdate(
                 req.params.id, // 1st arg - criteria => id
-                req.body, // 2nd arg - what to update
+                tempPortfolio, // 2nd arg - what to update
                 // { category: somecategory, tasks: []},
                 { new: true }, // 3rd arg - { new : true }
                 // { returnOriginal: false },
