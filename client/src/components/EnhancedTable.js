@@ -20,26 +20,44 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
+import Button from '@material-ui/core/Button';
 
-function createData(name, calories, fat, carbs, protein) {
-    return { name, calories, fat, carbs, protein };
-}
 
-const rows = [
-    createData('Cupcake', 305, 3.7, 67, 4.3),
-    createData('Donut', 452, 25.0, 51, 4.9),
-    createData('Eclair', 262, 16.0, 24, 6.0),
-    createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-    createData('Gingerbread', 356, 16.0, 49, 3.9),
-    createData('Honeycomb', 408, 3.2, 87, 6.5),
-    createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-    createData('Jelly Bean', 375, 0.0, 94, 0.0),
-    createData('KitKat', 518, 26.0, 65, 7.0),
-    createData('Lollipop', 392, 0.2, 98, 0.0),
-    createData('Marshmallow', 318, 0, 81, 2.0),
-    createData('Nougat', 360, 19.0, 9, 37.0),
-    createData('Oreo', 437, 18.0, 63, 4.0),
+// function createData(symbol, name, price, units, value, currentPC, targetPC, targetVal) {
+//     return { symbol, name, price, units, value, currentPC, targetPC, targetVal };
+// }
+
+const headCells = [
+    // { id: 'name', numeric: false, disablePadding: true, label: 'Dessert (100g serving)' },
+    // { id: 'calories', numeric: true, disablePadding: false, label: 'Calories' },
+    // { id: 'fat', numeric: true, disablePadding: false, label: 'Fat (g)' },
+    // { id: 'carbs', numeric: true, disablePadding: false, label: 'Carbs (g)' },
+    // { id: 'protein', numeric: true, disablePadding: false, label: 'Protein (g)' },
+    { id: 'symbol', numeric: false, disablePadding: true, label: 'Symbol' },
+    { id: 'name', numeric: false, disablePadding: false, label: 'Name' },
+    { id: 'price', numeric: true, disablePadding: false, label: 'Price' },
+    { id: 'units', numeric: true, disablePadding: false, label: 'Units' },
+    { id: 'value', numeric: true, disablePadding: false, label: 'Value' },
+    { id: 'currentPC', numeric: true, disablePadding: false, label: 'Current %' },
+    { id: 'targetPC', numeric: true, disablePadding: false, label: 'Target %' },
+    { id: 'targetVal', numeric: true, disablePadding: false, label: 'Target Value' },
 ];
+
+// const rows = [
+//     createData('Cupcake', 305, 3.7, 67, 4.3),
+//     createData('Donut', 452, 25.0, 51, 4.9),
+//     createData('Eclair', 262, 16.0, 24, 6.0),
+//     createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
+//     createData('Gingerbread', 356, 16.0, 49, 3.9),
+//     createData('Honeycomb', 408, 3.2, 87, 6.5),
+//     createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
+//     createData('Jelly Bean', 375, 0.0, 94, 0.0),
+//     createData('KitKat', 518, 26.0, 65, 7.0),
+//     createData('Lollipop', 392, 0.2, 98, 0.0),
+//     createData('Marshmallow', 318, 0, 81, 2.0),
+//     createData('Nougat', 360, 19.0, 9, 37.0),
+//     createData('Oreo', 437, 18.0, 63, 4.0),
+// ];
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -67,13 +85,6 @@ function stableSort(array, comparator) {
     return stabilizedThis.map((el) => el[0]);
 }
 
-const headCells = [
-    { id: 'name', numeric: false, disablePadding: true, label: 'Dessert (100g serving)' },
-    { id: 'calories', numeric: true, disablePadding: false, label: 'Calories' },
-    { id: 'fat', numeric: true, disablePadding: false, label: 'Fat (g)' },
-    { id: 'carbs', numeric: true, disablePadding: false, label: 'Carbs (g)' },
-    { id: 'protein', numeric: true, disablePadding: false, label: 'Protein (g)' },
-];
 
 function EnhancedTableHead(props) {
     const { classes, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
@@ -164,7 +175,7 @@ const EnhancedTableToolbar = (props) => {
                 </Typography>
             ) : (
                     <Typography className={classes.title} variant="h6" id="tableTitle" component="div">
-                        Nutrition
+                        Held Stocks
                     </Typography>
                 )}
 
@@ -213,7 +224,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function EnhancedTable() {
+export default function EnhancedTable(props) {
     const classes = useStyles();
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('calories');
@@ -221,6 +232,8 @@ export default function EnhancedTable() {
     const [page, setPage] = React.useState(0);
     const [dense, setDense] = React.useState(false);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
+
+    const rows = props.portfolioLiveDetails;
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -320,10 +333,14 @@ export default function EnhancedTable() {
                                             <TableCell component="th" id={labelId} scope="row" padding="none">
                                                 {row.name}
                                             </TableCell>
-                                            <TableCell align="right">{row.calories}</TableCell>
-                                            <TableCell align="right">{row.fat}</TableCell>
-                                            <TableCell align="right">{row.carbs}</TableCell>
-                                            <TableCell align="right">{row.protein}</TableCell>
+                                            <TableCell align="right">{row.symbol}</TableCell>
+                                            <TableCell align="right">{row.name}</TableCell>
+                                            <TableCell align="right">{row.price}</TableCell>
+                                            <TableCell align="right">{row.units}</TableCell>
+                                            <TableCell align="right">{row.value}</TableCell>
+                                            <TableCell align="right">{row.currentPC}</TableCell>
+                                            <TableCell align="right">{row.targetPC}</TableCell>
+                                            <TableCell align="right">{row.targetVal}</TableCell>
                                         </TableRow>
                                     );
                                 })}

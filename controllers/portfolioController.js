@@ -105,13 +105,95 @@ router.get("/", isAuthenticatedNormal, (req, res) => {
     });
 });
 
-// READ ONE - find one value path
+// READ ONE - find one portfolio and return the stock live details
 router.get("/:id", isAuthenticatedNormal, (req, res) => {
-    Portolio.findById(req.params.id, (error, portfolio) => {
+    Portfolio.findById(req.params.id, (error, portfolio) => {
         if (error) {
             return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({ error }); // { error } is the same as error: error!!!
         }
-        res.status(StatusCodes.OK).send(portfolio);
+
+        const stockDetailsArr = [];
+        // Call API ******************
+
+        // If only one stock
+        if (portfolio.heldStocks.length === 1) {
+            axios
+                .get(`https://eodhistoricaldata.com/api/real-time/${heldStock[0].symbol}?api_token=${process.env.EOD_API_KEY}&fmt=json`)
+                .then((axiosRes) => {
+                    console.log("Axios Response one item", axiosRes);
+                    const tempStockDetails = {
+                        symbol: axiosRes.data.code,
+                        name: "",
+                        price: parseFloat(axiosRes.data.close),
+                        units: 0,
+                        value: this.price * this.units,
+                        currentPC: 0,
+                        targetPC: 0,
+                        targetVal: 0,
+                    }
+                    stockDetailsArr.push(tempStockDetails);
+                    // Need to construct array of objects that looks like this:
+                    // symbol, name, price, units, value, currentPC, targetPC, targetVal
+                    console.log("tempStockDetails: ", tempStockDetails)
+                    console.log("stockDetailsArr: ", stockDetailsArr)
+                    return res.status(StatusCodes.OK).send(stockDetailsArr);
+
+                })
+                .catch((error) => {
+                    console.log("Error", error);
+                });
+
+            // If multiple stocks
+        } else if (portfolio.heldStocks.length > 1) {
+            console.log("*******************portfolio.heldStocks: ", portfolio.heldStocks)
+            const firstStockSymbol = portfolio.heldStocks[0].symbol;
+            let otherStockSymbols = "&s=";
+            for (let i = 1; i < portfolio.heldStocks.length; i++) {
+                if (i !== 1) {
+                    otherStockSymbols = otherStockSymbols.concat(",");
+                }
+                otherStockSymbols = otherStockSymbols.concat(portfolio.heldStocks[i].symbol)
+            }
+            console.log("*******************otherStockSymbols: ", otherStockSymbols)
+
+
+            axios
+                .get(`https://eodhistoricaldata.com/api/real-time/${firstStockSymbol}?api_token=${process.env.EOD_API_KEY}&fmt=json${otherStockSymbols}`)
+                .then((axiosRes) => {
+                    console.log("Axios Response multiple items", axiosRes);
+                    for (const stockItem of axiosRes.data) {
+                        const tempStockDetails = {
+                            symbol: stockItem.code,
+                            name: "",
+                            price: parseFloat(stockItem.close),
+                            units: 0,
+                            value: this.price * this.units,
+                            currentPC: 0,
+                            targetPC: 0,
+                            targetVal: 0,
+                        }
+                        stockDetailsArr.push(tempStockDetails);
+                    }
+
+                    // Need to construct array of objects that looks like this:
+                    // symbol, name, price, units, value, currentPC, targetPC, targetVal
+                    // console.log("tempStockDetails: ", tempStockDetails)
+                    console.log("stockDetailsArr: ", stockDetailsArr)
+                    return res.status(StatusCodes.OK).send(stockDetailsArr);
+
+                })
+                .catch((error) => {
+                    console.log("Error", error);
+                });
+
+        } else {
+            res.status(StatusCodes.OK).send(stockDetailsArr);
+        }
+
+
+
+
+
     });
 });
 

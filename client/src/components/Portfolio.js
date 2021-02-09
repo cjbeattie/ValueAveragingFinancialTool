@@ -3,24 +3,43 @@ import EnhancedTable from './EnhancedTable'
 import AddToPortfolioButton from './AddToPortfolioButton'
 import axios from "axios";
 import { useParams } from 'react-router-dom'
+import { useImmer } from "use-immer";
+
 
 
 
 const Portfolio = (props) => {
-    const [portfolio, setPortfolio] = React.useState(
-        {
-            heldStocks: []
-        }
-    );
+    const [portfolioLiveDetails, setPortfolioLiveDetails] = React.useState([]);
+
 
     let { windowUserID } = useParams();
 
     console.log("props.user from portfolio ", props.user)
 
+
+
     React.useEffect(() => {
         // console.log("in useEffect. windowUserID and user is ", windowUserID, user);
         props.checkForUserInURL(windowUserID);
-    }, []);
+
+        if (props.user !== null) {
+            axios
+                // Get live data for each stock in the portfolio
+                .get(`/api/portfolio/${props.user.portfolios[0]._id}`)
+                .then((res) => {
+                    console.log("Response for getting live data", res);
+                    // const tempLiveDetails = portfolioLiveDetails;
+                    // tempLiveDetails.push(res.data)
+                    setPortfolioLiveDetails(res.data);
+                    // Need to update table here
+                })
+                .catch((error) => {
+                    console.log("Error", error);
+                });
+        }
+        // Update table
+
+    }, [props.user]);
 
 
     const handleAddNew = (dialogText) => {
@@ -63,9 +82,12 @@ const Portfolio = (props) => {
                 //     ...props.user,
                 //     portfolios: tempPortfoliosList
                 // }
+                const tempPortfolios = props.user.portfolios;
+                tempPortfolios[0] = res.data;
+
                 const tempUser = {
                     ...props.user,
-                    portfolios: res.data
+                    portfolios: tempPortfolios
                 }
                 props.updateUserState(tempUser)
                 // setCreated(true);
@@ -76,12 +98,15 @@ const Portfolio = (props) => {
     };
 
 
+
+
+
     return (
         <>
             <h1>Portfolio</h1>
             { windowUserID ? <h2>User ID: {windowUserID}</h2> : <h2>No user</h2>}
             <AddToPortfolioButton handleAddNew={handleAddNew} />
-            <EnhancedTable />
+            <EnhancedTable portfolioLiveDetails={portfolioLiveDetails} />
 
         </>
     )
