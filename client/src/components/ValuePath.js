@@ -138,7 +138,8 @@ export default function ValuePath(props) {
                                         console.log("Response to adding value path to user", res);
                                         setCreated(true);
                                         history.push(`/${userRes.data._id}/valuepath`);
-                                        props.updateUserState(tempUser);
+                                        // props.updateUserState(tempUser);
+                                        props.updateUserState(res.data);
                                     })
                                     .catch((error) => {
                                         console.log("Error to adding value path to user", error);

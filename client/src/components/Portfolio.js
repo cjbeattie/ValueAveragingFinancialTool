@@ -33,6 +33,11 @@ const Portfolio = (props) => {
         console.log("Adding new. props.user is ", props.user)
         console.log("Adding new. props.user.portfolios[0]._id is ", props.user.portfolios[0]._id)
 
+        // const data = {
+        //     currentPortfolio: props.user.portfolios[0],
+        //     dialogText: dialogText,
+        // }
+
         const tempHeldStocks = props.user.portfolios[0].heldStocks
 
         tempHeldStocks.push({
@@ -50,13 +55,17 @@ const Portfolio = (props) => {
             .put(`/api/portfolio/${props.user.portfolios[0]._id}`, tempPortfolio)
             .then((res) => {
                 console.log("Response", res);
-                const tempPortfoliosList = [
-                    ...props.user.portfolios
-                ]
-                tempPortfoliosList.push(res.data._id)
+                // const tempPortfoliosList = [
+                //     ...props.user.portfolios
+                // ]
+                // tempPortfoliosList.push(res.data)
+                // const tempUser = {
+                //     ...props.user,
+                //     portfolios: tempPortfoliosList
+                // }
                 const tempUser = {
                     ...props.user,
-                    portfolios: tempPortfoliosList
+                    portfolios: res.data
                 }
                 props.updateUserState(tempUser)
                 // setCreated(true);

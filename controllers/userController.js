@@ -136,7 +136,7 @@ router.get("/:id", isAuthenticatedNormal, (req, res) => {
 //     });
 // });
 
-// UPDATE
+// UPDATE - WITH POPULATE
 router.put(
     "/:id",
     isAuthenticatedAdmin,
@@ -154,17 +154,46 @@ router.put(
             User.findByIdAndUpdate(
                 req.params.id, // 1st arg - criteria => id
                 req.body, // 2nd arg - what to update
-                { new: true }, // 3rd arg - { new : true }
-                (error, user) => {
-                    if (error) {
-                        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({ error }); // { error } is the same as error: error!!!
-                    }
-                    res.status(StatusCodes.OK).send(user);
+                { new: true } // 3rd arg - { new : true }
+            ).populate('valuePaths').populate('portfolios').exec((error, user) => {
+                if (error) {
+                    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({ error }); // { error } is the same as error: error!!!
                 }
-            );
+                res.status(StatusCodes.OK).send(user);
+            });
         }
     }
 );
+
+// // UPDATE - OLD without populate
+// router.put(
+//     "/:id",
+//     isAuthenticatedAdmin,
+//     // body("username", "Min Length of 3").trim().isLength({ min: 3 }),
+//     // body("score", "Must be a number").trim().isNumeric().isLength({ max: 3 }),
+//     (req, res) => {
+//         const errors = validationResult(req);
+
+//         if (!errors.isEmpty()) {
+//             // There are errors.
+//             // Errors are returned in an array using `errors.array()`.
+//             const locals = { user: req.body, errors: errors.array() };
+//             res.status(StatusCodes.BAD_REQUEST).send(locals);
+//         } else {
+//             User.findByIdAndUpdate(
+//                 req.params.id, // 1st arg - criteria => id
+//                 req.body, // 2nd arg - what to update
+//                 { new: true }, // 3rd arg - { new : true }
+//                 (error, user) => {
+//                     if (error) {
+//                         return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({ error }); // { error } is the same as error: error!!!
+//                     }
+//                     res.status(StatusCodes.OK).send(user);
+//                 }
+//             );
+//         }
+//     }
+// );
 
 // // UPDATE
 // router.put(

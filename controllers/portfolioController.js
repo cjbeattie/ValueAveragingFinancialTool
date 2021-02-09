@@ -10,6 +10,8 @@ const addQuarters = require('date-fns/addQuarters');
 const addYears = require('date-fns/addYears');
 const parseISO = require('date-fns/parseISO');
 const _ = require('lodash');
+const axios = require("axios");
+
 
 
 const router = express.Router();
@@ -159,15 +161,26 @@ router.put(
         } else {
             console.log("got here! req.body is ", req.body)
 
-            const tempPortfolio = req.body
-
-            // AXIOS CALL HERE! Get things and update tempPortfolio ******************************
-
+            // const URL = `https://eodhistoricaldata.com/api/search/${req.body.dialogText}?api_token=${process.env.EOD_API_KEY}`
+            // axios.get(URL)
+            //     .then((res) => {
+            //         console.log("Response from axios call to EOD", res);
+            //         const tempStock = {
+            //             symbol: res.data.code,
+            //             targetPercent: 0,
+            //             numHeldUnits: 0,
+            //             currencyCode: "",
+            //         }
+            //         tempPortfolio.heldStocks.push(tempStock)
+            //     })
+            //     .catch((error) => {
+            //         console.log("Error", error);
+            //     });
 
 
             Portfolio.findByIdAndUpdate(
                 req.params.id, // 1st arg - criteria => id
-                tempPortfolio, // 2nd arg - what to update
+                req.body, // 2nd arg - what to update
                 // { category: somecategory, tasks: []},
                 { new: true }, // 3rd arg - { new : true }
                 // { returnOriginal: false },
