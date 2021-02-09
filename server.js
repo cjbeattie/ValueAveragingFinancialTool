@@ -25,13 +25,13 @@ mongoose.connect(process.env.MONGODB_URI, {
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(express.static("public")); // setup the static / public folder
-app.use(
-    session({
-        secret: process.env.SECRET, //a random string do not copy this value or your stuff will get hacked
-        resave: false, // default more info: https://www.npmjs.com/package/express-session#resave
-        saveUninitialized: false // default  more info: https://www.npmjs.com/package/express-session#resave
-    })
-)
+// app.use(
+//     session({
+//         secret: process.env.SECRET, //a random string do not copy this value or your stuff will get hacked
+//         resave: false, // default more info: https://www.npmjs.com/package/express-session#resave
+//         saveUninitialized: false // default  more info: https://www.npmjs.com/package/express-session#resave
+//     })
+// )
 // app.use('/api/users', userController)
 // app.use("/api/list", listController);
 // app.use("/api/category", categoryController);
@@ -52,7 +52,7 @@ if (process.env.NODE_ENV === 'production') {
     });
 }
 
-const port = process.env.PORT || 4000
+const port = process.env.PORT || 3000
 app.listen(port, () => {
     console.log("Server is listening on port " + port);
 });
