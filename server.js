@@ -8,7 +8,7 @@ const valuePathController = require('./controllers/valuePathController');
 const portfolioController = require('./controllers/portfolioController');
 const userController = require('./controllers/userController')
 const session = require("express-session");
-// const path = require('path'); // setup the mongoose connection (app.js)
+const path = require('path'); // setup the mongoose connection (app.js) for Heroku
 
 require("dotenv").config();
 
