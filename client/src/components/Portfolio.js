@@ -22,7 +22,7 @@ const Portfolio = (props) => {
         // console.log("in useEffect. windowUserID and user is ", windowUserID, user);
         props.checkForUserInURL(windowUserID);
 
-        if (props.user !== null) {
+        if (props.user) {
             axios
                 // Get live data for each stock in the portfolio
                 .get(`/api/portfolio/${props.user.portfolios[0]._id}`)

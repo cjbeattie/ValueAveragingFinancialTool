@@ -113,12 +113,13 @@ router.get("/:id", isAuthenticatedNormal, (req, res) => {
         }
 
         const stockDetailsArr = [];
-        // Call API ******************
+
+        // Call API 
 
         // If only one stock
         if (portfolio.heldStocks.length === 1) {
             axios
-                .get(`https://eodhistoricaldata.com/api/real-time/${heldStock[0].symbol}?api_token=${process.env.EOD_API_KEY}&fmt=json`)
+                .get(`https://eodhistoricaldata.com/api/real-time/${portfolio.heldStocks[0].symbol}?api_token=${process.env.EOD_API_KEY}&fmt=json`)
                 .then((axiosRes) => {
                     console.log("Axios Response one item", axiosRes);
                     // TODO: NEED TO CHANGE THE STRUCTURE OF THIS TO ONLY RETURN DATA RELEVANT TO THIS EOD API CALL
