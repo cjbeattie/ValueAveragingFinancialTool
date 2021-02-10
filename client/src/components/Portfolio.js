@@ -118,7 +118,7 @@ const Portfolio = (props) => {
 
                         //Add calculated values
                         calcStock.calcCurrentValue = Math.round(((calcStock.numHeldUnits * calcStock.price) + Number.EPSILON) * 100) / 100
-                        calcStock.calcCurrentPercent = Math.round(((calcStock.calcCurrentValue / tempTargetPortfolioValue * 100) + Number.EPSILON) * 100) / 100;
+                        // calcStock.calcCurrentPercent = Math.round(((calcStock.calcCurrentValue / tempTargetPortfolioValue * 100) + Number.EPSILON) * 100) / 100;
                         calcStock.calcTargetValue = tempTargetPortfolioValue * heldStocks[i].targetPercent / 100;
                         calcStock.calcValueDifference = calcStock.calcTargetValue - calcStock.calcCurrentValue;
                         calcStock.calcUnitsToBuy = Math.round(((calcStock.calcValueDifference / calcStock.price) + Number.EPSILON) * 100) / 100;
@@ -127,6 +127,10 @@ const Portfolio = (props) => {
 
                         portfolioValue += calcStock.calcCurrentValue;
 
+                    }
+                    // Calculating currentPercent for each stock, which depends on the previous iteration to be complete!
+                    for (let i = 0; i < heldStocks.length; i++) {
+                        tempTableData[i].calcCurrentPercent = Math.round(((tempTableData[i].calcCurrentValue / portfolioValue * 100) + Number.EPSILON) * 100) / 100;
                     }
                     // Update the data that gets sent to the table
                     setTableData(tempTableData);
