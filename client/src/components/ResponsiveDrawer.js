@@ -231,13 +231,13 @@ function ResponsiveDrawer(props) {
                 <div className={classes.toolbar} />
                 <Switch>
                     {/* <Route exact path="/"><Portfolio user={user} updateUserState={updateUserState} checkForUserInURL={checkForUserInURL} /></Route> */}
-                    <Route exact path="/"><ValuePath updateUserState={updateUserState} /></Route>
-                    <Route path="/valuepath"><ValuePath updateUserState={updateUserState} /></Route>
+                    <Route exact path="/"><ValuePath updateUserState={updateUserState} checkForUserInURL={checkForUserInURL} /></Route>
+                    <Route path="/valuepath"><ValuePath updateUserState={updateUserState} checkForUserInURL={checkForUserInURL} /></Route>
                     <Route path="/portfolio"><Portfolio updateUserState={updateUserState} checkForUserInURL={checkForUserInURL} /></Route>
                     <Route path="/about"><About /></Route>
                     {/* <Route path="/valuepath/:windowUserID"><ValuePath /></Route>
                     <Route path="/portfolio/:windowUserID"><Portfolio /></Route> */}
-                    <Route path="/:windowUserID/valuepath"><ValuePath /></Route>
+                    <Route path="/:windowUserID/valuepath"><ValuePath user={user} checkForUserInURL={checkForUserInURL} /></Route>
                     <Route path="/:windowUserID/portfolio"><Portfolio user={user} updateUserState={updateUserState} checkForUserInURL={checkForUserInURL} /></Route>
                     <Route path="/:windowUserID/about"><About /></Route>
                 </Switch>
