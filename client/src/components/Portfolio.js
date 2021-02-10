@@ -231,9 +231,9 @@ const Portfolio = (props) => {
         <>
             <h1>Portfolio</h1>
             {/* { windowUserID ? <h2>User ID: {windowUserID}</h2> : <h2>No user</h2>} */}
-            <p>Current Portfolio Value: ${highLevelData.calcCurrentPortfolioValue}</p>
+            <p>Current Portfolio Value: ${highLevelData.calcCurrentPortfolioValue.toFixed(2)}</p>
             <p>Target Portfolio Value: ${highLevelData.targetPortfolioValue}</p>
-            <p>Next Investment: ${highLevelData.calcNextInvestment}</p>
+            <p>Next Investment: ${highLevelData.calcNextInvestment.toFixed(2)}</p>
             {/* <p>Next Investment Date: {format(highLevelData.nextInvestmentDate, 'dd/MM/yyyy')}</p> */}
             {/* <p>Next Investment Date: {highLevelData.nextInvestmentDate}</p> */}
             { highLevelData.nextInvestmentDate &&

@@ -417,15 +417,15 @@ export default function ValuePath(props) {
                     </form>
                 </Grid>
                 <Grid item xs={4}>
-                    <Typography component="h1" variant="h5">
+                    {/* <Typography component="h1" variant="h5">
                         Value Path
-                    </Typography>
+                    </Typography> */}
                     {props.user ? <ValuePathTable valuePath={props.user.valuePaths[0].valuePath} /> : ""}
                 </Grid>
                 <Grid item xs={4}>
-                    <Typography component="h1" variant="h5">
+                    {/* <Typography component="h1" variant="h5">
                         Graph
-                    </Typography>
+                    </Typography> */}
                 </Grid>
             </Grid>
 
