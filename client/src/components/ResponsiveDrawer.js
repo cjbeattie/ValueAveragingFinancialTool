@@ -15,6 +15,7 @@ import MailIcon from '@material-ui/icons/Mail';
 import MenuIcon from '@material-ui/icons/Menu';
 import AttachMoneyIcon from '@material-ui/icons/AttachMoney';
 import ShowChartIcon from '@material-ui/icons/ShowChart';
+import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
@@ -23,6 +24,7 @@ import Portfolio from './Portfolio';
 import ValuePath from './ValuePath';
 import { useParams } from 'react-router-dom'
 import axios from "axios";
+import About from "./About";
 
 
 
@@ -57,10 +59,11 @@ const useStyles = makeStyles((theme) => ({
         },
     },
     appBar: {
-        [theme.breakpoints.up('sm')]: {
-            width: `calc(100% - ${drawerWidth}px)`,
-            marginLeft: drawerWidth,
-        },
+        // [theme.breakpoints.up('sm')]: {
+        //     width: `calc(100% - ${drawerWidth}px)`,
+        //     marginLeft: drawerWidth,
+        // },
+        zIndex: theme.zIndex.drawer + 1,
     },
     menuButton: {
         marginRight: theme.spacing(2),
@@ -137,14 +140,16 @@ function ResponsiveDrawer(props) {
 
         myListItems =
             <>
-                <ListItemLink to={portfolioLink} primary="Portfolio" icon={<AttachMoneyIcon />} />
                 <ListItemLink to={valuepathLink} primary="Value Path" icon={<ShowChartIcon />} />
+                <ListItemLink to={portfolioLink} primary="Portfolio" icon={<AttachMoneyIcon />} />
+
             </>;
     } else {
         myListItems =
             <>
-                <ListItemLink to="/portfolio" primary="Portfolio" icon={<AttachMoneyIcon />} />
                 <ListItemLink to="/valuepath" primary="Value Path" icon={<ShowChartIcon />} />
+                <ListItemLink to="/portfolio" primary="Portfolio" icon={<AttachMoneyIcon />} />
+
             </>;
     }
 
@@ -157,13 +162,16 @@ function ResponsiveDrawer(props) {
             </List>
             <Divider />
             <List>
+                <ListItemLink to="/about" primary="About" icon={<AccountBalanceIcon />} />
+            </List>
+            {/* <List>
                 {['All mail', 'Trash', 'Spam'].map((text, index) => (
                     <ListItem button key={text}>
                         <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
                         <ListItemText primary={text} />
                     </ListItem>
                 ))}
-            </List>
+            </List> */}
         </div>
     );
 
@@ -222,13 +230,16 @@ function ResponsiveDrawer(props) {
             <main className={classes.content}>
                 <div className={classes.toolbar} />
                 <Switch>
-                    <Route exact path="/"><Portfolio user={user} updateUserState={updateUserState} checkForUserInURL={checkForUserInURL} /></Route>
+                    {/* <Route exact path="/"><Portfolio user={user} updateUserState={updateUserState} checkForUserInURL={checkForUserInURL} /></Route> */}
+                    <Route exact path="/"><ValuePath updateUserState={updateUserState} /></Route>
                     <Route path="/valuepath"><ValuePath updateUserState={updateUserState} /></Route>
                     <Route path="/portfolio"><Portfolio updateUserState={updateUserState} checkForUserInURL={checkForUserInURL} /></Route>
+                    <Route path="/about"><About /></Route>
                     {/* <Route path="/valuepath/:windowUserID"><ValuePath /></Route>
                     <Route path="/portfolio/:windowUserID"><Portfolio /></Route> */}
                     <Route path="/:windowUserID/valuepath"><ValuePath /></Route>
                     <Route path="/:windowUserID/portfolio"><Portfolio user={user} updateUserState={updateUserState} checkForUserInURL={checkForUserInURL} /></Route>
+                    <Route path="/:windowUserID/about"><About /></Route>
                 </Switch>
             </main>
         </div>

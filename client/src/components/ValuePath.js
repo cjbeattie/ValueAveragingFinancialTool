@@ -180,7 +180,7 @@ export default function ValuePath(props) {
                 <Typography component="h1" variant="h5">
                     Value Path Settings
                 </Typography>
-                {windowUserID ? <h2>User ID: {windowUserID}</h2> : <h2>No user</h2>}
+                {/* {windowUserID ? <h2>User ID: {windowUserID}</h2> : <h2>No user</h2>} */}
                 <form className={classes.form} noValidate>
                     <Grid container spacing={2}>
                         <Grid item xs={12} sm={6}>
@@ -271,7 +271,7 @@ export default function ValuePath(props) {
 
                         <Grid item xs={12} sm={6}>
                             {/* <CurrencySelect /> */}
-                            <FormControl variant="outlined" className={classes.formControl}>
+                            <FormControl variant="outlined" className={classes.formControl} fullWidth>
                                 <InputLabel id="demo-simple-select-outlined-label">Currency</InputLabel>
                                 <Select
                                     labelId="demo-simple-select-outlined-label"
@@ -317,7 +317,7 @@ export default function ValuePath(props) {
                         </Grid>
                         <Grid item xs={12} sm={6}>
                             {/* <CycleSelect /> */}
-                            <FormControl variant="outlined" className={classes.formControl}>
+                            <FormControl variant="outlined" className={classes.formControl} fullWidth>
                                 <InputLabel id="demo-simple-select-outlined-label">Cycle</InputLabel>
                                 <Select
                                     labelId="demo-simple-select-outlined-label"

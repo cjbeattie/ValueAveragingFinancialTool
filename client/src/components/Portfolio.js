@@ -227,7 +227,7 @@ const Portfolio = (props) => {
     return (
         <>
             <h1>Portfolio</h1>
-            { windowUserID ? <h2>User ID: {windowUserID}</h2> : <h2>No user</h2>}
+            {/* { windowUserID ? <h2>User ID: {windowUserID}</h2> : <h2>No user</h2>} */}
             <p>Current Portfolio Value: ${highLevelData.calcCurrentPortfolioValue}</p>
             <p>Target Portfolio Value: ${highLevelData.targetPortfolioValue}</p>
             <p>Next Investment: ${highLevelData.calcNextInvestment}</p>
