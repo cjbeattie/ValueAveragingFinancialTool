@@ -4,12 +4,27 @@ import AddToPortfolioButton from './AddToPortfolioButton'
 import axios from "axios";
 import { useParams } from 'react-router-dom'
 import { useImmer } from "use-immer";
+import StockItemDisplay from './StockItemDisplay'
+import { makeStyles } from '@material-ui/core/styles';
+import Grid from '@material-ui/core/Grid';
 
+
+const useStyles = makeStyles((theme) => ({
+    root: {
+        flexGrow: 1,
+    },
+    paper: {
+        padding: theme.spacing(2),
+        textAlign: 'center',
+        color: theme.palette.text.secondary,
+    },
+}));
 
 
 
 const Portfolio = (props) => {
     const [portfolioLiveDetails, setPortfolioLiveDetails] = React.useState([]);
+    const [tableData, setTableData] = React.useState([]);
 
 
     let { windowUserID } = useParams();
@@ -36,6 +51,40 @@ const Portfolio = (props) => {
                     console.log("Response for getting live data", res);
                     console.log("The current user is: ", props.user)
                     console.log("#######################")
+
+                    // for (const heldStock of props.user.portfolios[0].heldStocks) {
+                    //     heldStock.symbol
+                    // }
+                    // for (const stock of res.data) {
+                    //     stock.symbol
+                    // }
+
+                    let tempTableData = [];
+                    const arr1 = props.user.portfolios[0].heldStocks
+                    const arr2 = res.data
+
+                    for (let i = 0; i < arr1.length; i++) {
+
+                        // Combine static and live price data in a single object for this stock
+                        const calcStock = {
+                            ...arr1[i],
+                            ...(arr2.find((itmInner) => itmInner.symbol === arr1[i].symbol))
+                        };
+
+                        //Add calculated values 
+                        calcStock.calcValue = Math.round((calcStock.numHeldUnits * calcStock.price + Number.EPSILON) * 100) / 100
+                        calcStock.calcCurrentPercent = 0;
+                        calcStock.calcTargetValue = 0;
+                        calcStock.calcUnitsToBuy = 0;
+                        calcStock.calcCostThisPurchase = 0;
+
+                        tempTableData.push(calcStock);
+
+                    }
+
+                    setTableData(tempTableData);
+
+                    console.log("table data: ", tempTableData);
 
                 })
                 .catch((error) => {
@@ -104,6 +153,7 @@ const Portfolio = (props) => {
 
 
 
+    const classes = useStyles();
 
 
     return (
@@ -111,8 +161,15 @@ const Portfolio = (props) => {
             <h1>Portfolio</h1>
             { windowUserID ? <h2>User ID: {windowUserID}</h2> : <h2>No user</h2>}
             <AddToPortfolioButton handleAddNew={handleAddNew} />
-            <EnhancedTable portfolioLiveDetails={portfolioLiveDetails} />
-
+            {/* <EnhancedTable portfolioLiveDetails={portfolioLiveDetails} /> */}
+            <Grid container alignItems="center" className={classes.root} spacing={3}>
+                {tableData.map((stock) => (
+                    <StockItemDisplay
+                        key={stock._id}
+                        stock={stock}
+                    />
+                ))}
+            </Grid>
         </>
     )
 }
