@@ -100,7 +100,7 @@ const Portfolio = (props) => {
                             ...(arr2.find((itmInner) => itmInner.symbol === arr1[i].symbol))
                         };
 
-                        //Add calculated values 
+                        //Add calculated values TODO****************************
                         calcStock.calcCurrentValue = Math.round((calcStock.numHeldUnits * calcStock.price + Number.EPSILON) * 100) / 100
                         calcStock.calcCurrentPercent = 28;
                         calcStock.calcTargetValue = 35000;
