@@ -84,7 +84,11 @@ const StockItemHeader = (props) => {
                             Units to Buy
                         </Typography>
                     </Grid>
-
+                    <Grid item xs={1}>
+                        <Typography variant="body1">
+                            Increment Units
+                        </Typography>
+                    </Grid>
 
                 </Grid>
 

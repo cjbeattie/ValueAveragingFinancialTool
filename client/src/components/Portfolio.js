@@ -41,7 +41,9 @@ const Portfolio = (props) => {
 
     console.log("props.user from portfolio ", props.user)
 
-
+    const handleIncrementStockUnits = (incrementStockInfo) => {
+        console.log("clicked! you want to add ", incrementStockInfo.numToAdd)
+    }
 
 
 
@@ -249,6 +251,7 @@ const Portfolio = (props) => {
                     <StockItemDisplay
                         key={stock._id}
                         stock={stock}
+                        handleIncrementStockUnits={handleIncrementStockUnits}
                     />
                 ))}
             </Grid>

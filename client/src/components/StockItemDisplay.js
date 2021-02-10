@@ -3,6 +3,10 @@ import Divider from '@material-ui/core/Divider';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
+// import Button from '@material-ui/core/Button';
+import IncrementStocksButton from './IncrementStocksButton'
+
+
 
 
 
@@ -18,8 +22,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
+
+
 const StockItemDisplay = (props) => {
     const classes = useStyles();
+
+
 
     return (
         <Grid item xs={12}>
@@ -63,6 +71,9 @@ const StockItemDisplay = (props) => {
                     </Grid>
                     <Grid item xs={1}>
                         {props.stock.calcUnitsToBuy}
+                    </Grid>
+                    <Grid item xs={1}>
+                        <IncrementStocksButton variant="contained" handleIncrementStockUnits={props.handleIncrementStockUnits} stockSymbol={props.stock.symbol} stockName={props.stock.name} />
                     </Grid>
 
 
