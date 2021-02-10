@@ -5,10 +5,13 @@ import axios from "axios";
 import { useParams } from 'react-router-dom'
 import { useImmer } from "use-immer";
 import StockItemDisplay from './StockItemDisplay'
+import StockItemHeader from './StockItemHeader'
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import format from 'date-fns/format'
 import isFuture from 'date-fns/isFuture'
+import parseISO from 'date-fns/parseISO';
+
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -30,13 +33,15 @@ const Portfolio = (props) => {
         calcCurrentPortfolioValue: 0,
         targetPortfolioValue: 0,
         calcNextInvestment: 0,
-        nextInvestmentDate: new Date(),
+        nextInvestmentDate: undefined,
     })
 
 
     let { windowUserID } = useParams();
 
     console.log("props.user from portfolio ", props.user)
+
+
 
 
 
@@ -48,31 +53,42 @@ const Portfolio = (props) => {
 
             let tempTargetPortfolioValue = 0;
 
+            let nextInvestmentDate;
+
             // Update the next value path value and date
             for (const valueItem of props.user.valuePaths[0].valuePath) {
-                if (isFuture(valueItem.cycleDate)) {
+                console.log("In the date checking loop **************************************")
+                if (isFuture(parseISO(valueItem.cycleDate))) {
+                    // if (valueItem.cycleDate === props.user.valuePaths[0].startDate) {
+                    //     continue;
+                    // }
+                    console.log("Date is in future **************************************")
+                    console.log("valueItem.cycleDate is ", valueItem.cycleDate)
                     tempTargetPortfolioValue = valueItem.cycleValue;
-                    setHighLevelData({
-                        ...highLevelData,
-                        targetPortfolioValue: tempTargetPortfolioValue,
-                        nextInvestmentDate: valueItem.cycleDate
-                    })
+                    nextInvestmentDate = new Date(valueItem.cycleDate);
+                    // setHighLevelData({
+                    //     ...highLevelData,
+                    //     ,
+                    // })
+                    console.log('highLevelData first pass');
+                    console.log(highLevelData);
                     break;
                 }
             }
-
-
-
 
             // Update live data from API and make calculations
             axios
                 // Get live data for each stock in the portfolio
                 .get(`/api/portfolio/${props.user.portfolios[0]._id}`)
                 .then((res) => {
+
                     console.log("Response for getting live data", res);
                     // const tempLiveDetails = portfolioLiveDetails;
                     // tempLiveDetails.push(res.data)
                     setPortfolioLiveDetails(res.data);
+
+                    console.log('highLevelData');
+                    console.log(highLevelData);
 
                     console.log("#######################")
                     console.log("Response for getting live data", res);
@@ -87,26 +103,25 @@ const Portfolio = (props) => {
                     // }
 
                     let tempTableData = [];
-                    const arr1 = props.user.portfolios[0].heldStocks
+                    const heldStocks = props.user.portfolios[0].heldStocks
                     const arr2 = res.data
 
                     let portfolioValue = 0;
 
-                    for (let i = 0; i < arr1.length; i++) {
+                    for (let i = 0; i < heldStocks.length; i++) {
 
                         // Combine static and live price data in a single object for this stock
                         const calcStock = {
-                            ...arr1[i],
-                            ...(arr2.find((itmInner) => itmInner.symbol === arr1[i].symbol))
+                            ...heldStocks[i],
+                            ...(arr2.find((itmInner) => itmInner.symbol === heldStocks[i].symbol))
                         };
 
-                        //Add calculated values TODO****************************
-                        calcStock.calcCurrentValue = Math.round((calcStock.numHeldUnits * calcStock.price + Number.EPSILON) * 100) / 100
-                        calcStock.calcCurrentPercent = 28;
-                        calcStock.calcTargetValue = 35000;
-                        calcStock.calcValueDifference = 6786;
-                        calcStock.calcUnitsToBuy = 83;
-
+                        //Add calculated values
+                        calcStock.calcCurrentValue = Math.round(((calcStock.numHeldUnits * calcStock.price) + Number.EPSILON) * 100) / 100
+                        calcStock.calcCurrentPercent = Math.round(((calcStock.calcCurrentValue / tempTargetPortfolioValue * 100) + Number.EPSILON) * 100) / 100;
+                        calcStock.calcTargetValue = tempTargetPortfolioValue * heldStocks[i].targetPercent / 100;
+                        calcStock.calcValueDifference = calcStock.calcTargetValue - calcStock.calcCurrentValue;
+                        calcStock.calcUnitsToBuy = Math.round(((calcStock.calcValueDifference / calcStock.price) + Number.EPSILON) * 100) / 100;
 
                         tempTableData.push(calcStock);
 
@@ -116,11 +131,13 @@ const Portfolio = (props) => {
                     // Update the data that gets sent to the table
                     setTableData(tempTableData);
 
-                    // Update the total current portfolio value
-                    setHighLevelData({
-                        ...highLevelData,
-                        calcCurrentPortfolioValue: portfolioValue,
-                    })
+                    // console.log('highLevelData');
+                    // console.log(highLevelData)
+                    // // Update the total current portfolio value
+                    // setHighLevelData({
+                    //     ...highLevelData,
+                    //     calcCurrentPortfolioValue: portfolioValue,
+                    // })
 
                     // Calculate the next investment
                     const tempNextInvestment = tempTargetPortfolioValue - portfolioValue;
@@ -128,6 +145,9 @@ const Portfolio = (props) => {
                     setHighLevelData({
                         ...highLevelData,
                         calcNextInvestment: tempNextInvestment,
+                        calcCurrentPortfolioValue: portfolioValue,
+                        nextInvestmentDate: nextInvestmentDate,
+                        targetPortfolioValue: tempTargetPortfolioValue
                     })
 
                     console.log("table data: ", tempTableData);
@@ -204,15 +224,20 @@ const Portfolio = (props) => {
         <>
             <h1>Portfolio</h1>
             { windowUserID ? <h2>User ID: {windowUserID}</h2> : <h2>No user</h2>}
-            <p>Current Portfolio Value: {highLevelData.calcCurrentPortfolioValue}</p>
-            <p>Target Portfolio Value: {highLevelData.targetPortfolioValue}</p>
-            <p>Next Investment: {highLevelData.calcNextInvestment}</p>
-            <p>Next Investment Date: {format(highLevelData.nextInvestmentDate, 'dd/MM/yyyy')}</p>
+            <p>Current Portfolio Value: ${highLevelData.calcCurrentPortfolioValue}</p>
+            <p>Target Portfolio Value: ${highLevelData.targetPortfolioValue}</p>
+            <p>Next Investment: ${highLevelData.calcNextInvestment}</p>
+            {/* <p>Next Investment Date: {format(highLevelData.nextInvestmentDate, 'dd/MM/yyyy')}</p> */}
+            {/* <p>Next Investment Date: {highLevelData.nextInvestmentDate}</p> */}
+            { highLevelData.nextInvestmentDate &&
+                <p>Next Investment Date: {highLevelData.nextInvestmentDate.getUTCDate()}/{highLevelData.nextInvestmentDate.getUTCMonth() + 1}/{highLevelData.nextInvestmentDate.getUTCFullYear()}</p>
+            }
 
 
             <AddToPortfolioButton handleAddNew={handleAddNew} />
             {/* <EnhancedTable portfolioLiveDetails={portfolioLiveDetails} /> */}
             <Grid container alignItems="center" className={classes.root} spacing={2}>
+                <StockItemHeader />
                 {tableData.map((stock) => (
                     <StockItemDisplay
                         key={stock._id}

@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-const StockItemDisplay = (props) => {
+const StockItemHeader = (props) => {
     const classes = useStyles();
 
     return (
@@ -26,43 +26,63 @@ const StockItemDisplay = (props) => {
             <Paper className={classes.paper} xs={12}>
                 <Grid container spacing={3} justify="space-between" wrap="nowrap">
                     <Grid item xs={1}>
-                        <Typography variant="h5">
-                            {props.stock.symbol}
+                        <Typography variant="body1">
+                            Ticker Symbol
                         </Typography>
 
                     </Grid>
                     <Grid item xs={2}>
-                        {props.stock.name}
+                        <Typography variant="body1">
+                            Name
+                        </Typography>
                     </Grid>
                     <Grid item xs={1}>
-                        {props.stock.price}
+                        <Typography variant="body1">
+                            Price Now
+                        </Typography>
                     </Grid>
                     <Grid item xs={1}>
-                        {props.stock.currencyCode}
-                    </Grid>
-                    <Divider orientation="vertical" flexItem />
-                    <Grid item xs={1}>
-                        {props.stock.numHeldUnits}
-                    </Grid>
-                    <Grid item xs={1}>
-                        ${props.stock.calcCurrentValue}
-                    </Grid>
-                    <Grid item xs={1}>
-                        {props.stock.calcCurrentPercent}%
+                        <Typography variant="body1">
+                            Currency
+                        </Typography>
                     </Grid>
                     <Divider orientation="vertical" flexItem />
                     <Grid item xs={1}>
-                        {props.stock.targetPercent}%
+                        <Typography variant="body1">
+                            Current Held Units
+                        </Typography>
                     </Grid>
                     <Grid item xs={1}>
-                        ${props.stock.calcTargetValue}
+                        <Typography variant="body1">
+                            Current Value
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={1}>
+                        <Typography variant="body1">
+                            Current %
+                        </Typography>
                     </Grid>
                     <Divider orientation="vertical" flexItem />
                     <Grid item xs={1}>
-                        ${props.stock.calcValueDifference}
+                        <Typography variant="body1">
+                            Target %
+                        </Typography>
                     </Grid>
                     <Grid item xs={1}>
-                        {props.stock.calcUnitsToBuy}
+                        <Typography variant="body1">
+                            Target Value
+                        </Typography>
+                    </Grid>
+                    <Divider orientation="vertical" flexItem />
+                    <Grid item xs={1}>
+                        <Typography variant="body1">
+                            Value Difference
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={1}>
+                        <Typography variant="body1">
+                            Units to Buy
+                        </Typography>
                     </Grid>
 
 
@@ -74,4 +94,4 @@ const StockItemDisplay = (props) => {
 }
 
 
-export default StockItemDisplay;
+export default StockItemHeader;

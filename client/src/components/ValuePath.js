@@ -71,7 +71,7 @@ export default function ValuePath(props) {
         investmentGoal: 10000000,
         endDate: new Date('January 1, 2041 00:00:00'),
         startDate: new Date(),
-        cycle: "Annually",
+        cycle: "Monthly",
         r: 0.5,
         g: 1,
         currency: "AUD",
