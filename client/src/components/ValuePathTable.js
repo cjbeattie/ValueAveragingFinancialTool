@@ -87,8 +87,10 @@ export default function ValuePathTable(props) {
 
     const rows = props.valuePath;
 
+    // TODO: Read and Understand Me!
     for (const row of rows) {
-        row.cycleDate = new Date(row.cycleDate)
+        //set new property because this is changing the data in the state, causing Portfolio to fail.
+        row.cycleDateJS = new Date(row.cycleDate)
     }
 
     return (
@@ -136,7 +138,7 @@ export default function ValuePathTable(props) {
                                         );
                                     })} */}
                                     <TableCell key={columns[0].id} align={columns[0].align}>
-                                        {row.cycleDate.getUTCDate()}/{row.cycleDate.getUTCMonth() + 1}/{row.cycleDate.getUTCFullYear()}
+                                        {row.cycleDateJS.getUTCDate()}/{row.cycleDateJS.getUTCMonth() + 1}/{row.cycleDateJS.getUTCFullYear()}
                                     </TableCell>
                                     <TableCell key={columns[0].id} align={columns[0].align}>
                                         {row.cycleValue}

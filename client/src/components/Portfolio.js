@@ -60,12 +60,7 @@ const Portfolio = (props) => {
                 console.log("In the date checking loop **************************************")
                 console.log("Date is ", valueItem.cycleDate)
                 console.log("parseISO date is ", parseISO(valueItem.cycleDate))
-                // This isFuture is temperamental, sometimes it wants you to parseISO(valueItem.cycleDate) and sometimes not....
-                // if (isFuture(parseISO(valueItem.cycleDate))) {
-                if (isFuture(valueItem.cycleDate)) {
-                    // if (valueItem.cycleDate === props.user.valuePaths[0].startDate) {
-                    //     continue;
-                    // }
+                if (isFuture(parseISO(valueItem.cycleDate))) {
                     console.log("Date is in future **************************************")
                     console.log("valueItem.cycleDate is ", valueItem.cycleDate)
                     tempTargetPortfolioValue = valueItem.cycleValue;
