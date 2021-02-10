@@ -120,8 +120,8 @@ const Portfolio = (props) => {
                         calcStock.calcCurrentValue = Math.round(((calcStock.numHeldUnits * calcStock.price) + Number.EPSILON) * 100) / 100
                         // calcStock.calcCurrentPercent = Math.round(((calcStock.calcCurrentValue / tempTargetPortfolioValue * 100) + Number.EPSILON) * 100) / 100;
                         calcStock.calcTargetValue = tempTargetPortfolioValue * heldStocks[i].targetPercent / 100;
-                        calcStock.calcValueDifference = calcStock.calcTargetValue - calcStock.calcCurrentValue;
-                        calcStock.calcUnitsToBuy = Math.round(((calcStock.calcValueDifference / calcStock.price) + Number.EPSILON) * 100) / 100;
+                        calcStock.calcValueDifference = Math.round(((calcStock.calcTargetValue - calcStock.calcCurrentValue) + Number.EPSILON) * 100) / 100;
+                        calcStock.calcUnitsToBuy = Math.round(calcStock.calcValueDifference / calcStock.price)
 
                         tempTableData.push(calcStock);
 
