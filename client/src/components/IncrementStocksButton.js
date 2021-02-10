@@ -74,7 +74,7 @@ export default function IncrementStocksButton(props) {
                         onChange={(e) =>
                             setIncrementStockInfo({
                                 ...incrementStockInfo,
-                                numToAdd: e.target.value
+                                numToAdd: parseInt(e.target.value)
                             })}
                     />
                 </DialogContent>

@@ -117,6 +117,26 @@ function ResponsiveDrawer(props) {
 
     }
 
+    const handleIncrementStockUnits = (incrementStockInfo) => {
+        console.log("clicked! you want to add ", incrementStockInfo.numToAdd)
+        let tempPortfolios = user.portfolios;
+        // let tempPortfolio = user.portfolios[0];
+        let tempHeldStocks = user.portfolios[0].heldStocks;
+        let stockToUpdate = tempHeldStocks.find((itmInner) => itmInner.symbol === incrementStockInfo.stockSymbol)
+        let stockToUpdateIndex = tempHeldStocks.findIndex((itmInner) => itmInner.symbol === incrementStockInfo.stockSymbol)
+        console.log("zebra typeof stockToUpdate.numHeldUnits", typeof stockToUpdate.numHeldUnits)
+        console.log("zebra typeof incrementStockInfo.numToAdd", typeof incrementStockInfo.numToAdd)
+        stockToUpdate.numHeldUnits += incrementStockInfo.numToAdd;
+        tempPortfolios[0].heldStocks[stockToUpdateIndex] = stockToUpdate;
+
+
+
+        setUser({
+            ...user,
+            portfolios: tempPortfolios,
+        })
+    }
+
     // let { windowUserID } = useParams();
 
     // React.useEffect(() => {
@@ -233,12 +253,12 @@ function ResponsiveDrawer(props) {
                     {/* <Route exact path="/"><Portfolio user={user} updateUserState={updateUserState} checkForUserInURL={checkForUserInURL} /></Route> */}
                     <Route exact path="/"><ValuePath updateUserState={updateUserState} checkForUserInURL={checkForUserInURL} /></Route>
                     <Route path="/valuepath"><ValuePath updateUserState={updateUserState} checkForUserInURL={checkForUserInURL} /></Route>
-                    <Route path="/portfolio"><Portfolio updateUserState={updateUserState} checkForUserInURL={checkForUserInURL} /></Route>
+                    <Route path="/portfolio"><Portfolio updateUserState={updateUserState} checkForUserInURL={checkForUserInURL} handleIncrementStockUnits={handleIncrementStockUnits} /></Route>
                     <Route path="/about"><About /></Route>
                     {/* <Route path="/valuepath/:windowUserID"><ValuePath /></Route>
                     <Route path="/portfolio/:windowUserID"><Portfolio /></Route> */}
                     <Route path="/:windowUserID/valuepath"><ValuePath user={user} checkForUserInURL={checkForUserInURL} /></Route>
-                    <Route path="/:windowUserID/portfolio"><Portfolio user={user} updateUserState={updateUserState} checkForUserInURL={checkForUserInURL} /></Route>
+                    <Route path="/:windowUserID/portfolio"><Portfolio user={user} updateUserState={updateUserState} checkForUserInURL={checkForUserInURL} handleIncrementStockUnits={handleIncrementStockUnits} /></Route>
                     <Route path="/:windowUserID/about"><About /></Route>
                 </Switch>
             </main>
