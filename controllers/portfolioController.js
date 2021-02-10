@@ -205,7 +205,7 @@ router.post(
     }
 );
 
-// UPDATE
+// UPDATE ADD TO PORTFOLIO
 router.put(
     "/:id",
     isAuthenticatedAdmin,
@@ -292,6 +292,39 @@ router.put(
                 .catch((error) => {
                     console.log("Error", error);
                 });
+        }
+    }
+);
+
+// UPDATE INCREMENT STOCKS
+router.put(
+    "/:id/incrementStock",
+    isAuthenticatedAdmin,
+    // body("name", "Min Length of 3").trim().isLength({ min: 3 }),
+    // body("score", "Must be a number").trim().isNumeric().isLength({ max: 3 }),
+    (req, res) => {
+        const errors = validationResult(req);
+
+        if (!errors.isEmpty()) {
+            // There are errors.
+            // Errors are returned in an array using `errors.array()`.
+            const locals = { portfolio: req.body, errors: errors.array() };
+            res.status(StatusCodes.BAD_REQUEST).send(locals);
+        } else {
+            Portfolio.findByIdAndUpdate(
+                req.params.id, // 1st arg - criteria => id
+                req.body, // 2nd arg - what to update
+                // { category: somecategory, tasks: []},
+                { new: true }, // 3rd arg - { new : true }
+                // { returnOriginal: false },
+                (error, portfolio) => {
+                    if (error) {
+                        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({ error }); // { error } is the same as error: error!!!
+                    }
+                    console.log("req.body", req.body)
+                    res.status(StatusCodes.OK).send(portfolio);
+                }
+            );
         }
     }
 );

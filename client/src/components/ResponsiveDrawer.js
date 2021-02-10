@@ -120,7 +120,7 @@ function ResponsiveDrawer(props) {
     const handleIncrementStockUnits = (incrementStockInfo) => {
         console.log("clicked! you want to add ", incrementStockInfo.numToAdd)
         let tempPortfolios = user.portfolios;
-        // let tempPortfolio = user.portfolios[0];
+
         let tempHeldStocks = user.portfolios[0].heldStocks;
         let stockToUpdate = tempHeldStocks.find((itmInner) => itmInner.symbol === incrementStockInfo.stockSymbol)
         let stockToUpdateIndex = tempHeldStocks.findIndex((itmInner) => itmInner.symbol === incrementStockInfo.stockSymbol)
@@ -131,10 +131,29 @@ function ResponsiveDrawer(props) {
 
 
 
-        setUser({
-            ...user,
-            portfolios: tempPortfolios,
-        })
+        // setUser({
+        //     ...user,
+        //     portfolios: tempPortfolios,
+        // })
+        let tempPortfolio = tempPortfolios[0];
+
+        axios
+            .put(`/api/portfolio/${user.portfolios[0]._id}/incrementStock`, tempPortfolio)
+            .then((res) => {
+                console.log("Response from axios call to server when incrementing stock: ", res);
+                const tempPortfolios = user.portfolios;
+                tempPortfolios[0] = res.data;
+
+                const tempUser = {
+                    ...user,
+                    portfolios: tempPortfolios
+                }
+                setUser(tempUser)
+                // setCreated(true);
+            })
+            .catch((error) => {
+                console.log("Error", error);
+            });
     }
 
     // let { windowUserID } = useParams();
