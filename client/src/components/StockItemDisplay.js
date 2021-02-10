@@ -24,7 +24,7 @@ const StockItemDisplay = (props) => {
     return (
         <Grid item xs={12}>
             <Paper className={classes.paper} xs={12}>
-                <Grid container spacing={3} justify="space-between">
+                <Grid container spacing={3} justify="space-between" wrap="nowrap">
                     <Grid item xs={1}>
                         <Typography variant="h5">
                             {props.stock.symbol}
@@ -35,25 +35,36 @@ const StockItemDisplay = (props) => {
                         {props.stock.name}
                     </Grid>
                     <Grid item xs={1}>
-                        {props.stock.calcValue}
+                        {props.stock.price}
                     </Grid>
                     <Grid item xs={1}>
-                        {props.stock.calcCurrentPercent}
+                        {props.stock.currencyCode}
                     </Grid>
                     <Divider orientation="vertical" flexItem />
                     <Grid item xs={1}>
-                        {props.stock.targetPercent}
+                        {props.stock.numHeldUnits}
+                    </Grid>
+                    <Grid item xs={1}>
+                        {props.stock.calcCurrentValue}
+                    </Grid>
+                    <Grid item xs={1}>
+                        {props.stock.calcCurrentPercent}%
+                    </Grid>
+                    <Divider orientation="vertical" flexItem />
+                    <Grid item xs={1}>
+                        {props.stock.targetPercent}%
                     </Grid>
                     <Grid item xs={1}>
                         {props.stock.calcTargetValue}
                     </Grid>
                     <Divider orientation="vertical" flexItem />
                     <Grid item xs={1}>
-                        {props.stock.calcUnitsToBuy}
+                        {props.stock.calcValueDifference}
                     </Grid>
                     <Grid item xs={1}>
-                        {props.stock.calcCostThisPurchase}
+                        {props.stock.calcUnitsToBuy}
                     </Grid>
+
 
                 </Grid>
 
