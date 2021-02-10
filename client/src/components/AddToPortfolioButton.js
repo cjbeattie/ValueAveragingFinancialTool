@@ -19,15 +19,20 @@ export default function AddToPortfolioButton(props) {
     const classes = useStyles();
 
     const [open, setOpen] = React.useState(false);
-    const [dialogText, setDialogText] = React.useState("");
+    const [dialogText, setDialogText] = React.useState({
+        exchange: "",
+        tickerSymbol: "",
+        numHeldUnits: 0,
+        targetPercent: 0,
+    });
 
     const handleClickOpen = () => {
         setOpen(true);
     };
 
-    const handleDialogTextChange = (e) => {
-        setDialogText(e.target.value);
-    };
+    // const handleDialogTextChange = (e) => {
+    //     setDialogText(e.target.value);
+    // };
 
     const handleCancel = () => {
         setOpen(false);
@@ -36,7 +41,12 @@ export default function AddToPortfolioButton(props) {
     const handleSubmit = () => {
         setOpen(false);
         props.handleAddNew(dialogText);
-        setDialogText("");
+        setDialogText({
+            exchange: "",
+            tickerSymbol: "",
+            numHeldUnits: 0,
+            targetPercent: 0,
+        });
     };
 
     return (
@@ -55,17 +65,63 @@ export default function AddToPortfolioButton(props) {
                 <DialogTitle id="form-dialog-title">Add To Portfolio</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        Enter the name of the stock ticker symbol below to add this stock to your portfolio.
+                        Enter the exchange code and ticker symbol to add to your portfolio.
                     </DialogContentText>
                     <TextField
-                        autoFocus
+                        // autoFocus
                         margin="dense"
-                        id="symbol"
-                        label="Stock Symbol"
+                        id="exchange"
+                        label="Exchange Code"
                         type="text"
                         fullWidth
-                        value={dialogText}
-                        onChange={handleDialogTextChange}
+                        value={dialogText.exchange}
+                        onChange={(e) =>
+                            setDialogText((state) => ({
+                                ...state,
+                                exchange: e.target.value,
+                            }))}
+                    />
+                    <TextField
+                        // autoFocus
+                        margin="dense"
+                        id="symbol"
+                        label="Ticker Symbol"
+                        type="text"
+                        fullWidth
+                        value={dialogText.tickerSymbol}
+                        onChange={(e) =>
+                            setDialogText((state) => ({
+                                ...state,
+                                tickerSymbol: e.target.value,
+                            }))}
+                    />
+                    <TextField
+                        // autoFocus
+                        margin="dense"
+                        id="numHeldUnits"
+                        label="Number of held units"
+                        type="number"
+                        fullWidth
+                        value={dialogText.numHeldUnits}
+                        onChange={(e) =>
+                            setDialogText((state) => ({
+                                ...state,
+                                numHeldUnits: e.target.value,
+                            }))}
+                    />
+                    <TextField
+                        // autoFocus
+                        margin="dense"
+                        id="TargetPercent"
+                        label="Target %"
+                        type="number"
+                        fullWidth
+                        value={dialogText.targetPercent}
+                        onChange={(e) =>
+                            setDialogText((state) => ({
+                                ...state,
+                                targetPercent: e.target.value,
+                            }))}
                     />
                 </DialogContent>
                 <DialogActions>

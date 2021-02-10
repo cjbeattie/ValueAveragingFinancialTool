@@ -4,10 +4,10 @@ const Schema = mongoose.Schema;
 const portfolioSchema = Schema({
     heldStocks: [{
         symbol: String,
+        name: String,
+        currencyCode: String,
         targetPercent: Number,
         numHeldUnits: Number,
-        currencyCode: String,
-        // name: String,
         // currentPrice: Number,
         // priceUpdated: Date,
     }]

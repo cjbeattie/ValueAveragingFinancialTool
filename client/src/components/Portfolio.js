@@ -31,7 +31,12 @@ const Portfolio = (props) => {
                     // const tempLiveDetails = portfolioLiveDetails;
                     // tempLiveDetails.push(res.data)
                     setPortfolioLiveDetails(res.data);
-                    // Need to update table here
+
+                    console.log("#######################")
+                    console.log("Response for getting live data", res);
+                    console.log("The current user is: ", props.user)
+                    console.log("#######################")
+
                 })
                 .catch((error) => {
                     console.log("Error", error);
@@ -43,37 +48,37 @@ const Portfolio = (props) => {
 
 
     const handleAddNew = (dialogText) => {
-        console.log("this is the dialog text", dialogText);
-        if (props.user === null) {
-            console.log("user state is null")
+        // console.log("this is the dialog text", dialogText);
+        if (!props.user) {
+            console.log("Cannot add new. User state is ", props.user)
             return;
         }
-        console.log("Adding new. props.user._id is ", props.user._id)
-        console.log("Adding new. props.user is ", props.user)
-        console.log("Adding new. props.user.portfolios[0]._id is ", props.user.portfolios[0]._id)
+        // console.log("Adding new. props.user._id is ", props.user._id)
+        // console.log("Adding new. props.user is ", props.user)
+        // console.log("Adding new. props.user.portfolios[0]._id is ", props.user.portfolios[0]._id)
 
         // const data = {
         //     currentPortfolio: props.user.portfolios[0],
         //     dialogText: dialogText,
         // }
 
-        const tempHeldStocks = props.user.portfolios[0].heldStocks
+        // const tempHeldStocks = props.user.portfolios[0].heldStocks
 
-        tempHeldStocks.push({
-            symbol: dialogText,
-            targetPercent: 0,
-            numHeldUnits: 0,
-            currencyCode: "",
-        })
+        // tempHeldStocks.push({
+        //     symbol: dialogText,
+        //     targetPercent: 0,
+        //     numHeldUnits: 0,
+        //     currencyCode: "",
+        // })
 
-        const tempPortfolio = {
-            heldStocks: tempHeldStocks
-        }
+        // const tempPortfolio = {
+        //     heldStocks: tempHeldStocks
+        // }
 
         axios
-            .put(`/api/portfolio/${props.user.portfolios[0]._id}`, tempPortfolio)
+            .put(`/api/portfolio/${props.user.portfolios[0]._id}`, dialogText)
             .then((res) => {
-                console.log("Response", res);
+                console.log("Response from axios call to server when adding new: ", res);
                 // const tempPortfoliosList = [
                 //     ...props.user.portfolios
                 // ]

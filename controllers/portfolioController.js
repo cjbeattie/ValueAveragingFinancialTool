@@ -105,16 +105,16 @@ router.get("/", isAuthenticatedNormal, (req, res) => {
     });
 });
 
-// READ ONE - find one portfolio and return the stock live details
+// READ ONE - find one portfolio and return the live details for all held stocks
 router.get("/:id", isAuthenticatedNormal, (req, res) => {
     Portfolio.findById(req.params.id, (error, portfolio) => {
         if (error) {
             return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({ error }); // { error } is the same as error: error!!!
         }
 
-        const stockDetailsArr = [];
+        const stockLiveDetailsArr = [];
 
-        // Call API 
+        // Call API FOR LATEST PRICE FOR ALL STOCKS IN PORTFOLIO
 
         // If only one stock
         if (portfolio.heldStocks.length === 1) {
@@ -122,23 +122,16 @@ router.get("/:id", isAuthenticatedNormal, (req, res) => {
                 .get(`https://eodhistoricaldata.com/api/real-time/${portfolio.heldStocks[0].symbol}?api_token=${process.env.EOD_API_KEY}&fmt=json`)
                 .then((axiosRes) => {
                     console.log("Axios Response one item", axiosRes);
-                    // TODO: NEED TO CHANGE THE STRUCTURE OF THIS TO ONLY RETURN DATA RELEVANT TO THIS EOD API CALL
-                    const tempStockDetails = {
+                    const tempStockLiveDetails = {
                         symbol: axiosRes.data.code,
-                        name: "",
                         price: parseFloat(axiosRes.data.close),
-                        units: 0,
-                        value: this.price * this.units,
-                        currentPC: 0,
-                        targetPC: 0,
-                        targetVal: 0,
                     }
-                    stockDetailsArr.push(tempStockDetails);
+                    stockLiveDetailsArr.push(tempStockLiveDetails);
                     // Need to construct array of objects that looks like this:
                     // symbol, name, price, units, value, currentPC, targetPC, targetVal
-                    console.log("tempStockDetails: ", tempStockDetails)
-                    console.log("stockDetailsArr: ", stockDetailsArr)
-                    return res.status(StatusCodes.OK).send(stockDetailsArr);
+                    console.log("tempStockLiveDetails: ", tempStockLiveDetails)
+                    console.log("stockLiveDetailsArr: ", stockLiveDetailsArr)
+                    return res.status(StatusCodes.OK).send(stockLiveDetailsArr);
 
                 })
                 .catch((error) => {
@@ -147,7 +140,7 @@ router.get("/:id", isAuthenticatedNormal, (req, res) => {
 
             // If multiple stocks
         } else if (portfolio.heldStocks.length > 1) {
-            // console.log("*******************portfolio.heldStocks: ", portfolio.heldStocks)
+            // Construct search strings
             const firstStockSymbol = portfolio.heldStocks[0].symbol;
             let otherStockSymbols = "&s=";
             for (let i = 1; i < portfolio.heldStocks.length; i++) {
@@ -156,32 +149,21 @@ router.get("/:id", isAuthenticatedNormal, (req, res) => {
                 }
                 otherStockSymbols = otherStockSymbols.concat(portfolio.heldStocks[i].symbol)
             }
-            // console.log("*******************otherStockSymbols: ", otherStockSymbols)
-
 
             axios
                 .get(`https://eodhistoricaldata.com/api/real-time/${firstStockSymbol}?api_token=${process.env.EOD_API_KEY}&fmt=json${otherStockSymbols}`)
                 .then((axiosRes) => {
                     console.log("Axios Response multiple items", axiosRes);
                     for (const stockItem of axiosRes.data) {
-                        const tempStockDetails = {
+                        const tempStockLiveDetails = {
                             symbol: stockItem.code,
-                            name: "",
                             price: parseFloat(stockItem.close),
-                            units: 0,
-                            value: this.price * this.units,
-                            currentPC: 0,
-                            targetPC: 0,
-                            targetVal: 0,
                         }
-                        stockDetailsArr.push(tempStockDetails);
+                        stockLiveDetailsArr.push(tempStockLiveDetails);
                     }
 
-                    // Need to construct array of objects that looks like this:
-                    // symbol, name, price, units, value, currentPC, targetPC, targetVal
-                    // console.log("tempStockDetails: ", tempStockDetails)
-                    console.log("stockDetailsArr: ", stockDetailsArr)
-                    return res.status(StatusCodes.OK).send(stockDetailsArr);
+                    console.log("stockLiveDetailsArr: ", stockLiveDetailsArr)
+                    return res.status(StatusCodes.OK).send(stockLiveDetailsArr);
 
                 })
                 .catch((error) => {
@@ -189,13 +171,8 @@ router.get("/:id", isAuthenticatedNormal, (req, res) => {
                 });
 
         } else {
-            res.status(StatusCodes.OK).send(stockDetailsArr);
+            res.status(StatusCodes.OK).send(stockLiveDetailsArr);
         }
-
-
-
-
-
     });
 });
 
@@ -243,7 +220,7 @@ router.put(
             const locals = { portfolio: req.body, errors: errors.array() };
             res.status(StatusCodes.BAD_REQUEST).send(locals);
         } else {
-            console.log("got here! req.body is ", req.body)
+            // console.log("got here! req.body is ", req.body)
 
             // const URL = `https://eodhistoricaldata.com/api/search/${req.body.dialogText}?api_token=${process.env.EOD_API_KEY}`
             // axios.get(URL)
@@ -261,21 +238,60 @@ router.put(
             //         console.log("Error", error);
             //     });
 
-
-            Portfolio.findByIdAndUpdate(
-                req.params.id, // 1st arg - criteria => id
-                req.body, // 2nd arg - what to update
-                // { category: somecategory, tasks: []},
-                { new: true }, // 3rd arg - { new : true }
-                // { returnOriginal: false },
-                (error, portfolio) => {
-                    if (error) {
-                        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({ error }); // { error } is the same as error: error!!!
+            // Search EOD API for symbol, check if it exists and update currency and name
+            axios.get(`https://eodhistoricaldata.com/api/search/${req.body.tickerSymbol}.${req.body.exchange}?api_token=${process.env.EOD_API_KEY}`)
+                .then((axiosRes) => {
+                    console.log("This is the axiosRes to the EOD search from AddToPortfolio submit: ", axiosRes)
+                    if (axiosRes === "[]") {
+                        return res.status(StatusCodes.BAD_REQUEST).send("This stock does not exist in the EOD API");
                     }
-                    console.log("req.body", req.body)
-                    res.status(StatusCodes.OK).send(portfolio);
-                }
-            );
+
+                    // Get current portfolios from user?
+
+                    // User.findByIdAndUpdate(
+                    //     req.user._id,
+                    //     { $push: { friends: friend._id } },
+                    //     { 'new': true }, cb);
+
+                    // Contact.findByIdAndUpdate(
+                    //     info._id,
+                    //     { $push: { "messages": { title: title, msg: msg } } },
+                    //     { safe: true, upsert: true, new: true },
+                    //     function (err, model) {
+                    //         console.log(err);
+                    //     }
+                    // );
+
+                    console.log("axiosRes.data: ", axiosRes.data)
+                    console.log("axiosRes.data.code: ", axiosRes.data.Code)
+
+                    Portfolio.findByIdAndUpdate(
+                        req.params.id, // 1st arg - criteria => id
+                        {
+                            $push: {
+                                "heldStocks": {
+                                    symbol: `${axiosRes.data[0].Code}.${axiosRes.data[0].Exchange}`,
+                                    name: `${axiosRes.data[0].Name}`,
+                                    currencyCode: `${axiosRes.data[0].Currency}`,
+                                    targetPercent: req.body.targetPercent,
+                                    numHeldUnits: req.body.numHeldUnits,
+                                }
+                            }
+                        },
+                        { new: true }, // 3rd arg - { new : true }
+                        (error, portfolio) => {
+                            if (error) {
+                                return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send({ error }); // { error } is the same as error: error!!!
+                            }
+                            console.log("req.body", req.body)
+                            console.log("Portfolio %%%%%%%%%%%%%%%%", portfolio)
+                            res.status(StatusCodes.OK).send(portfolio);
+                        }
+                    );
+                })
+                .catch((error) => {
+                    console.log("Error", error);
+                });
         }
     }
 );
