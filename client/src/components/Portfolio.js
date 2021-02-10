@@ -58,9 +58,10 @@ const Portfolio = (props) => {
             // Update the next value path value and date
             for (const valueItem of props.user.valuePaths[0].valuePath) {
                 console.log("In the date checking loop **************************************")
-                // console.log("Date is ", valueItem.cycleDate)
-                // console.log("parseISO date is ", parseISO(valueItem.cycleDate))
+                console.log("Date is ", valueItem.cycleDate)
+                console.log("parseISO date is ", parseISO(valueItem.cycleDate))
                 // This isFuture is temperamental, sometimes it wants you to parseISO(valueItem.cycleDate) and sometimes not....
+                // if (isFuture(parseISO(valueItem.cycleDate))) {
                 if (isFuture(valueItem.cycleDate)) {
                     // if (valueItem.cycleDate === props.user.valuePaths[0].startDate) {
                     //     continue;

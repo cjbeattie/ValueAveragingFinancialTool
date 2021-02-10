@@ -69,14 +69,14 @@ export default function ValuePath(props) {
 
     const [created, setCreated] = React.useState(false);
     const [formData, setFormData] = React.useState({
-        investmentGoal: 10000000,
-        endDate: new Date('January 1, 2041 00:00:00'),
+        investmentGoal: 5000000,
+        endDate: new Date('December 31, 2041 00:00:00'),
         startDate: new Date(),
         cycle: "Monthly",
         r: 0.5,
         g: 1,
         currency: "SGD",
-        currentValue: 3000
+        currentValue: 0
     });
     // const [currentUser, setCurrentUser] = React.useState(null);
 
