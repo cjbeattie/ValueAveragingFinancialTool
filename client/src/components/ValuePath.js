@@ -75,7 +75,7 @@ export default function ValuePath(props) {
         cycle: "Monthly",
         r: 0.5,
         g: 1,
-        currency: "AUD",
+        currency: "SGD",
         currentValue: 3000
     });
     // const [currentUser, setCurrentUser] = React.useState(null);
