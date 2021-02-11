@@ -90,6 +90,7 @@ export default function ValuePathTable(props) {
     // TODO: Read and Understand Me!
     for (const row of rows) {
         //set new property because this is changing the data in the state, causing Portfolio to fail.
+        //row.cycleDate = new Date(row.cycleDate);
         row.cycleDateJS = new Date(row.cycleDate)
     }
 
