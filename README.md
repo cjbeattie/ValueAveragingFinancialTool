@@ -10,6 +10,11 @@ https://valueaveragingfinancialtool.herokuapp.com/
 MERN (MongoDB, Express, React, Node)
 Material-UI
 
+## How to use it
+Start by editing the values you would like for your value path and hit "save". There is no need to create an account! Once you save, you now have a unique URL which you can bookmark to come back to (this was something I saw [wireframe.cc](http://wireframe.cc/) do and really wanted to try to implement it myself).
+
+Once your value path is created, head to your portfolio and add the stocks you would like to monitor. For now you will need to know the exact country code and ticker symbol, but down the track I plan to implement a search bar.
+
 ## Approach
 Value Averaging is an investment technique which guides how to invest over the course of a predefined time frame. A value "path" is calculated based on input the user provides, which determines the target value the user should invest into their portfolio for each time period.  Each period the investor simply makes the proper investment at each time period according to the target value.
 
