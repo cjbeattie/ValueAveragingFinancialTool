@@ -7,7 +7,8 @@ All projects here were done in about 5 days so are very much MVPs at this stage,
 https://valueaveragingfinancialtool.herokuapp.com/
 
 ## Technologies used
-MERN (MongoDB, Express, React, Node)
+MERN stack (MongoDB, Express, React, Node)
+
 Material-UI
 
 ## How to use it
